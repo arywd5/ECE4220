@@ -1,0 +1,16 @@
+15:29:28 **** Incremental Build of configuration Release for project testProject ****
+make all 
+Building file: ../src/testProject.c
+Invoking: GCC C Compiler
+gcc -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/testProject.d" -MT"src/testProject.d" -o "src/testProject.o" "../src/testProject.c"
+../src/testProject.c: In function ‘main’:
+../src/testProject.c:29:3: warning: implicit declaration of function ‘sleep’ [-Wimplicit-function-declaration]
+Finished building: ../src/testProject.c
+   sleep(1);
+ 
+   ^
+Building target: testProject
+Invoking: GCC C Linker
+gcc  -o "testProject"  ./src/testProject.o   -lwiringPi
+Finished building target: testProject
+ 

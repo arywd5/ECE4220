@@ -1,0 +1,44 @@
+/*
+ ============================================================================
+ Name        : testProject.c
+ Author      : 
+ Version     :
+ Copyright   : Your copyright notice
+ Description : Hello World in C, Ansi-style
+ ============================================================================
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <wiringPi.h>
+
+#define RED_LED 2
+#define BLUE_LED 5
+
+int main(void) {
+
+	wiringPiSetupGpio();
+
+	int counter = 0;
+	pinMode(RED_LED, OUTPUT);
+	pinMode(BLUE_LED, OUTPUT);
+
+	digitalWrite(RED_LED, 1);
+	sleep(1);
+	digitalWrite(BLUE_LED, 1);
+	sleep(1);
+
+
+/*	while(counter <= 10){
+		digitalWrite(RED_LED, 1);
+		sleep(1);
+		digitalWrite(RED_LED, 0);
+		digitalWrite(BLUE_LED, 1);
+		sleep(1);
+		digitalWrite(BLUE_LED, 0);
+		counter++;
+	}
+
+*/
+	return 0;
+}
