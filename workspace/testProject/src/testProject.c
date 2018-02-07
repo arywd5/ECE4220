@@ -21,7 +21,6 @@ int main(void) {
 
 	wiringPiSetupGpio();
 
-	int counter = 0;
 	int choice;
 	pinMode(RED_LED, OUTPUT);
 	pinMode(BLUE_LED, OUTPUT);
@@ -36,33 +35,33 @@ int main(void) {
 	scanf("%d", &choice);
 
 	if(choice == 1){
-		while(counter <= 10){
+		while(1){
 			digitalWrite(RED_LED, 1);
 			sleep(1);
 			digitalWrite(RED_LED, 0);
 			digitalWrite(BLUE_LED, 1);
 			sleep(1);
 			digitalWrite(BLUE_LED, 0);
-			counter++;
 		}
 	}
 
 	if(choice == 2){
-		int button;
+		int button = -1;
 		printf("\nPlease enter a number 1-5 for a button: ");
-		scanf("%d", &button);
-
+		while(button < 1 || button > 5){
+			scanf("%d", &button);
+		}
+		
+		button += 15;		//add 15 to the button to make it correspond to the pin numbers 		
+	
 		pullUpDnControl(button, PUD_DOWN);
-		while(!digitalRead(button)){}
-		if(digitalRead(button)){
-			while(counter <= 10){
+		while(!digitalRead(button)){}	
+			while(1){
 				digitalWrite(SPEAKER, 1);
-				usleep(450);
+				usleep(700);
 				digitalWrite(SPEAKER, 0);
-				usleep(450);			
+				usleep(700);			
 			}
-		}		
 	}
-
 	return 0;
 }
