@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="18" version="2.0">
+<workbench progressCount="21" version="2.0">
 <workbenchAdvisor/>
-<window height="767" width="1018" x="1122" y="188">
+<window height="1056" width="1248" x="65" y="24">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
 </perspectiveBar>
 <coolbarLayout>
 <coolItem id="group.file" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="258" y="26"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="232" y="26"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.cdt.ui.CElementCreationActionSet" itemType="typeToolBarContribution" x="186" y="26"/>
 <coolItem id="org.eclipse.debug.ui.launch.toolbar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="142" y="26"/>
 <coolItem id="org.eclipse.debug.ui.main.toolbar" itemType="typeToolBarContribution" x="36" y="26"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="80" y="26"/>
-<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="108" y="26"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="88" y="26"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="212" y="26"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
@@ -30,13 +30,14 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="testProject.c" partName="testProject.c" path="/home/pi/workspace/testProject/src/testProject.c" title="testProject.c" tooltip="testProject/src/testProject.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/testProject/src/testProject.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="463" selectionTopPixel="82"/>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="lab2Week1.c" partName="lab2Week1.c" title="lab2Week1.c" tooltip="/home/pi/ECE4220/workspace/Lab2/lab2Week1.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1047" selectionTopPixel="164"/>
 </editor>
 </editors>
 <views>
@@ -47,7 +48,7 @@
 <view id="org.eclipse.cdt.make.ui.views.MakeView" partName="Make Target"/>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
-<columnWidths org.eclipse.ui.ide.locationField="120" org.eclipse.ui.ide.markerType="120" org.eclipse.ui.ide.pathField="160" org.eclipse.ui.ide.resourceField="120" org.eclipse.ui.ide.severityAndDescriptionField="400"/>
+<columnWidths org.eclipse.ui.ide.locationField="120" org.eclipse.ui.ide.markerType="179" org.eclipse.ui.ide.pathField="160" org.eclipse.ui.ide.resourceField="120" org.eclipse.ui.ide.severityAndDescriptionField="400"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
@@ -248,15 +249,157 @@
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/testProject/src/testProject.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/src/test.c"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
 </editors>
-<item historyLabel="testProject.c" index="0">
-<position info="not_deleted" x="365" y="0"/>
-</item>
 <item historyLabel="test.c" index="1">
 <position info="not_deleted" x="81" y="0"/>
 </item>
-<item active="true" historyLabel="testProject.c" index="0">
+<item historyLabel="testProject.c" index="0">
 <position info="not_deleted" x="365" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2157" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2157" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="836" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1996" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1817" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1965" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1968" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1988" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2015" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1116" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1192" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1210" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="1209" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2045" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2150" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2117" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2120" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="2146" y="0"/>
+</item>
+<item historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="614" y="0"/>
+</item>
+<item active="true" historyLabel="lab2Week1.c" index="2">
+<position info="not_deleted" x="699" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -275,6 +418,9 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lab2Week1.c" tooltip="/home/pi/ECE4220/workspace/Lab2/lab2Week1.c">
+<persistable uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="testProject.c" tooltip="testProject/src/testProject.c">
 <persistable path="/testProject/src/testProject.c"/>
 </file>
