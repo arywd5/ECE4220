@@ -3,7 +3,8 @@
 //ECE 42240 Lab2 Week1
 
 #include <stdio.h>
-#include <sys/time.h>
+#include <stdlib.h>
+#include <time.h>
 #include <pthread.h>
 
 #define ROWS 150
@@ -18,84 +19,175 @@ typedef struct {					//structure to hold the data from the file
 	int rows;
 	int columns; 
 	int find;
-	
+
 } data;
 
+data mData;
 
-
-data *fileOpen(char *filename); //this function will open the file and inport the data into an array 
-void *thread1(data mData);		//our first thread to search the entire matrix
-void *thread2(data mData);		//second thread to search row by row through the matrix 
-void *thread3(data mData);		//third thread to seach column by column through the matrix
+int fileOpen(char *filename);  //this function will open the file and inport the data into an array 
+void *thread1(int find);		//our first thread to search the entire matrix
+void *thread2(int row);	  		//second thread to search row by row through the matrix 
+void *thread3(int column);		//third thread to seach column by column through the matrix
+void *thread4(int index);		//fourth thread to search each element indivdually 
 
 int main(int argc, char *argv[]){
-	
+
 	if(argc != 3){	//first check for the correct amount of input arguments. 
 		printf("\nIncorrect Usage\n ./a.out <number to search> <file to search>");
 		return -1;
 	}
 	
-	data *mData = fileOpen(argv[2]);
+	if(!atoi(argv[1])){	//check that the number given can be converted to an integer 
+		printf("\nIncoreect Usage\n Please enter a valid number to search\n./a.out <number to search> <file to search>");
+		return -1;
+	}
+
+	if(!fileOpen(argv[2])){	//if this function does not work properaly it will return a 0 and we should exit the program
+		printf("\nCorrect Usage:\n./a.out <number to search> <file to search>");
+		return -1;
+	}
+
+	mData.find = atoi(argv[1]);	//set our number to find in our array 
+
+	//declare time variables 
+	struct timespec c1, c2;
+	int start, end;
 	
+	clock_gettime(0, &c1);
+		
 	//trial I -- one thread to search the entire matrix 
 	pthread_t t1;
-	pthread_create(t1, NULL, thread1, (void *)mData);
-	
+	pthread_create(&t1, NULL, (void *)thread1, 0);
+
 	pthread_join(t1, NULL);
-	printf("\nSearch was sucesfull %d times", mData->count[0]);
+	clock_gettime(0, &c2);
+	printf("\nSearch was sucesfull %d times in %ld seconds", mData.count[0], (c1.tv_sec - c2.tv_sec)*100);
+
 	
+	//trial II -- one thread for each row 
+	int i;
+	int sum = 0;
+	pthread_t t2;
+
+	for(i = 0; i < mData.rows; i++){
+		pthread_create(&t2, NULL, (void *)thread2, (void *)&i);
+	}
+
+	for(i = 0; i < mData.rows; i++){
+		pthread_join(t2, NULL);
+		sum += mData.count[i];
+	}
 	
-	
-	
-	
+	printf("\nTriak II -- Search was sucessful %d times ", sum);
+
+	//trial III -- one thread for each column
+	int sum3 = 0;
+	pthread_t t3;
+
+	for(i = 0; i < mData.columns; i++){
+		pthread_create(&t3, NULL, (void *)thread3, (void *)&i);
+	}
+
+	for(i = 0; i < mData.columns; i++){
+		pthread_join(t3, NULL);
+		sum3 += mData.count[i];
+	}
+
+	printf("\nTrial III -- Search was sucesful %d times", sum3);
+
+	//trial IV -- one thread for each element in the array 
+	int sum4 = 0;
+	pthread_t t4;
+
+	for(i = 1; i <= (mData.rows * mData.columns); i++){
+		pthread_create(&t4, NULL, (void *)thread4, (void *)&i);
+	}
+
+	for(i = 1; i <= (mData.rows * mData.columns); i++){
+		pthread_join(t4, NULL);
+		sum4 += mData.count[i];
+	}
+
+	printf("\ntrial 4 -- Search was sucesfull %d times", sum4);
+
 	return 0;
 }
-
-data *fileOpen(char *filename){
+//function to open file and scan in matrix data 
+int fileOpen(char *filename){
 	FILE *fPtr;
-	data mData;
 	int i = 0, j = 0;
-	
+
 	printf("\nScanning in data....");
-	
+
 	fPtr = fopen(filename, "r");
 	if(fPtr == NULL){
-		printf("\nFile could not be opened please try again.");
-		return NULL;		
+		printf("\nFile could not be opened please try again.");		
+		return 0;
 	}
-	
-	//first scan in the first two elements which hold the number of rows and columns 
-	fscanf(fPtr, "%d %d", &(mData.rows), &(mData.columns));
-	
-	for(i = 0; i < mData.rows; i++){
-		for(j = 0; j < mData.columns; j++){
-			fscanf(fPtr, "%d", &(mData.matrix[i][j]));
-		}
-	}
-			
-	
-	return &mData;
-	
-}
 
-void *thread1(data mData){
+	else{	
+		//first scan in the first two elements which hold the number of rows and columns 
+		fscanf(fPtr, "%d %d", &(mData.rows), &(mData.columns));
+		printf("\nrows: %d, columns: %d", mData.rows, mData.columns);
+
+
+		for(i = 0; i < mData.rows; i++){
+			for(j = 0; j < mData.columns; j++){
+				fscanf(fPtr, "%d", &(mData.matrix[i][j]));
+			}
+		}
+
+	}
+	return 1;
+}
+//function to search through a matric of data and return the amount of times a certain number was found 
+void *thread1(int num){
 	mData.count[0] = 0; //make sure to 
 	int i = 0, j = 0;
+
 	for(i = 0; i < mData.rows; i++){
 		for(j = 0; j < mData.columns; j++){
-			if(mData.find == mData.matrix[i][j])
+			if(mData.find == mData.matrix[i][j]){
 				mData.count[0]++;
+			}
 		}
 	}
-	pthread_exit(1);
+	pthread_exit((void *)&i);
 }
+//function to search through a specific row of a matrix and count the number of times a certain number was found 
+void *thread2(int row){
 
-void *thread2(data mData){
-	
+	mData.count[row] = 0;
 	int i = 0;
-	for(i = 0; i < mData.Columns; i++){
-		if(mData.matrix[][i] == mData.find)
-			count[]++;
+	for(i = 0; i < mData.columns; i++){
+		if(mData.matrix[row][i] == mData.find)
+			mData.count[row]++;
+	}
+	pthread_exit((void *)&i);
+}
+//function to search each column of an array and count number of time a certain number was found 
+void *thread3(int col){
+
+	mData.count[col] = 0;
+	int i = 0; 
+
+	for( i = 0; i < mData.rows; i++){
+		if(mData.matrix[i][col] == mData.find)
+			mData.count[col]++;
+	}
+	pthread_exit((void *)&i);
+}
+//function to check if a certain element is the same as a given number 
+void *thread4(int index){
+	int i, j = index;
+	mData.count[index] = 0;
+
+	for(i = 0; j >= mData.columns; i++){
+		j -= mData.columns;
 	}
 	
+	if(mData.find == mData.matrix[i][j]){
+		mData.count[index]++;
+	}
+	pthread_exit((void *)&i);
 }
