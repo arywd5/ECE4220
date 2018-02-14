@@ -50,9 +50,9 @@ int main(int argc, char *argv[]){
 	mData.find = atoi(argv[1]);	//set our number to find in our array 
 
 	//declare time variables 
-//	struct timespec c1, c2;
-//	
-//	clock_gettime(0, &c1);
+	struct timespec c1, c2;
+	long timetook;	
+	clock_gettime(CLOCK_MONOTONIC, &c1);
 		
 	//trial I -- one thread to search the entire matrix ;
 	pthread_t t1;
@@ -60,9 +60,8 @@ int main(int argc, char *argv[]){
 
 	pthread_join(t1, NULL);
 
-//	clock_gettime(0, &c2);
-	printf("/nTrial I -- Search was sucesfull %d times in 6 seconds", mData.count[0]); //, (c1.tv_sec - c2.tv_sec)*100);
-
+	clock_gettime(CLOCK_MONOTONIC, &c2);
+	printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c1.tv_sec - c2.tv_sec)*100);
 	
 	//trial II -- one thread for each row 
 	int i;
@@ -131,7 +130,8 @@ int fileOpen(char *filename){
 				fscanf(fPtr, "%d", &(mData.matrix[i][j]));
 			}
 		}
-	
+
+	fclose(fPtr);	
 	return 1;
 }
 //function to search through a matric of data and return the amount of times a certain number was found 
