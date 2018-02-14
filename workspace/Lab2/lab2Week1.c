@@ -51,7 +51,11 @@ int main(int argc, char *argv[]){
 
 	//declare time variables 
 	struct timespec c1, c2;
-	long timetook;	
+	int nums[THREADS];
+	int i  = 0;
+	for(i = 0; i < THREADS; i++)
+		nums[i] = i;
+		
 	clock_gettime(CLOCK_MONOTONIC, &c1);
 		
 	//trial I -- one thread to search the entire matrix ;
@@ -61,53 +65,59 @@ int main(int argc, char *argv[]){
 	pthread_join(t1, NULL);
 
 	clock_gettime(CLOCK_MONOTONIC, &c2);
-	printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c1.tv_sec - c2.tv_sec)*100);
+	printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c2.tv_nsec - c1.tv_nsec)/100);
+
+
 	
 	//trial II -- one thread for each row 
-	int i;
 	int sum = 0;
 	pthread_t t2[mData.rows];
 
+	clock_gettime(CLOCK_MONOTONIC, &c1);
 	for(i = 0; i < mData.rows; i++){
-		pthread_create(&(t2[i]), NULL, (void *)thread2, (void *)&i);
+		pthread_create(&(t2[i]), NULL, (void *)thread2, (void *)&nums[i]);
 	}
 
 	for(i = 0; i < mData.rows; i++){
 		pthread_join(t2[i], NULL);
 		sum += mData.count[i];
 	}
-	
-	printf("\nTriak II -- Search was sucessful %d times ", sum);
+	clock_gettime(CLOCK_MONOTONIC, &c2);	
+
+	printf("\nTriak II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
 
 	//trial III -- one thread for each column
 	int sum3 = 0;
 	pthread_t t3;
 
+	clock_gettime(CLOCK_MONOTONIC, &c1);
 	for(i = 0; i < mData.columns; i++){
-		pthread_create(&t3, NULL, (void *)thread3, (void *)&i);
+		pthread_create(&t3, NULL, (void *)thread3, (void *)&nums[i]);
 	}
 
 	for(i = 0; i < mData.columns; i++){
 		pthread_join(t3, NULL);
 		sum3 += mData.count[i];
 	}
+	clock_gettime(CLOCK_MONOTONIC, &c2);
 
-	printf("\nTrial III -- Search was sucesful %d times", sum3);
+	printf("\nTrial III -- Search was sucesful %d times in %ld ms", sum3, (c2.tv_nsec - c1.tv_nsec)/100);
 
 	//trial IV -- one thread for each element in the array 
 	int sum4 = 0;
 	pthread_t t4;
 
+	clock_gettime(CLOCK_MONOTONIC, &c1);
 	for(i = 1; i <= (mData.rows * mData.columns); i++){
-		pthread_create(&t4, NULL, (void *)thread4, (void *)&i);
+		pthread_create(&t4, NULL, (void *)thread4, (void *)&nums[i]);
 	}
 
 	for(i = 1; i <= (mData.rows * mData.columns); i++){
 		pthread_join(t4, NULL);
 		sum4 += mData.count[i];
 	}
-
-	printf("\ntrial 4 -- Search was sucesfull %d times", sum4);
+	clock_gettime(CLOCK_MONOTONIC, &c2);
+	printf("\ntrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
 
 	return 0;
 }
@@ -153,10 +163,10 @@ void *thread2(void *ptr){
 
 	int ro = (*(int *)ptr);
 	mData.count[ro] = 0;
-	int i = 0;
-	for(i = 0; i < mData.columns; i++){
+	int i = 0;	
+	for(i = 0; i < mData.columns; i++){	
 		if(mData.matrix[ro][i] == mData.find)
-			mData.count[ro]++;
+		mData.count[ro]++;
 	}
 	pthread_exit(0);
 }
