@@ -14,10 +14,10 @@
 
 
 #define MY_PRIORITY 51
-#define PERIOD1 100000
-#define WAIT1 500
-#define WAIT2 1000
-#define WAIT3 1500
+#define PERIOD1 20000
+#define WAIT1 5000
+#define WAIT2 10000
+#define WAIT3 15000
 
 //structure to pass to the threads 
 typedef struct Arguments{
@@ -44,26 +44,36 @@ int main(){
 		return -1;
 	}
 	
+	args t1, t2, t3;			//structure to send to the different thread functions
 	char *buff;				//buffer to pass to the different threads 
-	buff = malloc(sizeof(char)*20);
+	buff = malloc(sizeof(char)*50);
 	char **stringArray;
 	int i;
-	stringArray = (char *)malloc(sizeof(char *) *20)
-	for(i = 0; i < 20; i++)			//malloc for size of 20 characters 
-		*(stringArray + i) = (char *)malloc(sizeof(char)*20);
-
+	t3.song = (char **)malloc(sizeof(char *) *20);
+	for(i = 0; i < 20; i++){			//malloc for size of 20 characters 
+		*(t3.song + i) = (char *)malloc(sizeof(char)*50);
+		printf("\n%p -> %p", t3.song + i, *(t3.song + i));
+	}
+	printf("\n\n %p -> %p", t3.song, *(t3.song));
 	 
-	args t1, t2, t3;			//structure to send to the different thread functions
 	t1.fPtr = ffPtr;			//point all of our arguments to the correct files and buffer
 	t1.buffer = buff;
 	t1.waittime = WAIT1;
+	t1.song = NULL;
+	//t2 is for our thread that reads from second.txt
 	t2.fPtr = lfPtr;
 	t2.buffer = buff;
-	t2.waittime = WAIT2;
+	t2.waittime = WAIT3;
+	t2.song = NULL;
+	//t3 is for our thread that stores the buffer into our song variable 
 	t3.fPtr = NULL;
 	t3.buffer = buff;
-	t3.waittime = WAIT3;
-	t3.song = stringArray; 
+	t3.waittime = WAIT2;
+	//t3.song = stringArray; 
+	
+	printf("\n\n %p -> %p", stringArray, *(stringArray));
+	printf("\n\n %p -> %p", t3.song, *(t3.song));
+	printf("\n\n %p buffer ", buff);
 	
 	//create our threads
 	pthread_t thread1, thread2, thread3;
@@ -76,6 +86,9 @@ int main(){
 	pthread_join(thread2, NULL);
 	pthread_join(thread3, NULL);	
 	
+	stringArray = t3.song;		
+	
+	printf("\nsucesfully joined all threads, back to main...\n\n");
 	for(i = 0; i < 20; i++){
 		printf("\n%s", *(stringArray + i));
 	}
@@ -85,20 +98,24 @@ int main(){
 	fclose(ffPtr);
 	fclose(lfPtr);
 	free(buff);	
-	for(i = 0; i < 20; i++)
+/*	for(i = 0; i < 16; i++)
 		free(*(stringArray +i));
 	free(stringArray);
-		
+*/		
 	return 0;
 }
 
 void *read1(args *ptr){
 	args *data;
 	data = (args *)(ptr);
+	int i;
+	size_t charac;
+	size_t size = 50;
 	
 	int timer = timerfd_create(CLOCK_MONOTONIC, 0);
 	struct itimerspec itval;
 
+	printf("\nEntering reading thread....");
 	//set up start time 
 	itval.it_value.tv_sec = 0;
 	itval.it_value.tv_nsec = data->waittime; 
@@ -117,16 +134,19 @@ void *read1(args *ptr){
 	//Start timer 
 	timerfd_settime(timer, 0, &itval, NULL);
 	
-	while(!feof){
 	
+	while(!feof(data->fPtr)){
+		//printf("\nScanning in from file %p", data->fPtr);
 		read(timer, &num_periods, sizeof(num_periods));
-		fscanf(data->fPtr, "%s\n", data->buffer);
+		charac = getline(&(data->buffer), &size, data->fPtr);
+		//fscanf(data->fPtr, "%s\n", data->buffer);
+		printf("\nLine: %s", (data->buffer));
 
 	}		
-	if(num_periods > 1){
-		printf("\nMISSED WINDOW");
-		exit(0);
-	}
+//	if(num_periods > 1){
+//		printf("\nMISSED WINDOW IN READ1");
+//		exit(0);
+//	}
 
 	pthread_exit(0);
 }
@@ -134,7 +154,11 @@ void *read1(args *ptr){
 void *join(args *ptr){
 	args *data;
 	data = (args *)(ptr);
-
+	int i = 0;
+	printf("\n%p -> %p", data->song, *(data->song) );
+	
+	
+	printf("\nEntering joining thread...");
 	//set the scheduler
         struct sched_param param;
         param.sched_priority = MY_PRIORITY;
@@ -155,13 +179,15 @@ void *join(args *ptr){
 	//Start timer
         timerfd_settime(timer, 0, &itval, NULL);
 	
-	read(timer, &num_periods, sizeof(num_periods));
-	*(data->song) = *(data->buffer);  	
-	
-	if(num_periods > 1){
-		printf("\nMISSED WINDOW");
+    for(i = 0; i < 16; i++){
+    	read(timer, &num_periods, sizeof(num_periods));
+    	*((data->song) + i) = (data->buffer);  
+    	printf("\nadded: %s to our song from buffer = %s", *(data->song + i), (data->buffer));
+    }
+/*	if(num_periods > 1){
+		printf("\nMISSED WINDOW IN JOIN SONG");
 		exit(0);
 	}
-
+*/
 	pthread_exit(0);
 }
