@@ -14,7 +14,7 @@
 
 
 #define MY_PRIORITY 51
-#define PERIOD1 350000
+#define PERIOD1 315000
 #define WAIT1 5000
 #define WAIT2 10000
 #define WAIT3 15000

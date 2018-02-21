@@ -52,13 +52,10 @@ int main(int argc, char *argv[]){
 	//declare time variables 
 	struct timespec c1, c2;
 	int nums[THREADS];
-	int i  = 0, c;
-	float avg1 = 0, avg2 = 0, avg3 = 0, avg4 = 0;
+	int i  = 0;
 	for(i = 0; i < THREADS; i++){
 		nums[i] = i;
 	}
-
-//	for(c = 0; c < 10; c++){
 
 		clock_gettime(CLOCK_MONOTONIC, &c1);
 
@@ -70,8 +67,7 @@ int main(int argc, char *argv[]){
 
 		clock_gettime(CLOCK_MONOTONIC, &c2);
 		printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c2.tv_nsec - c1.tv_nsec)/100);
-		avg1 += (c2.tv_nsec - c1.tv_nsec)/100;
-
+		
 
 		//trial II -- one thread for each row 
 		int sum = 0;
@@ -89,7 +85,7 @@ int main(int argc, char *argv[]){
 		clock_gettime(CLOCK_MONOTONIC, &c2);	
 
 		printf("\nTriak II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
-		avg2 += (c2.tv_nsec - c1.tv_nsec)/100;
+		
 
 
 		//trial III -- one thread for each column
@@ -108,7 +104,7 @@ int main(int argc, char *argv[]){
 		clock_gettime(CLOCK_MONOTONIC, &c2);
 
 		printf("\nTrial III -- Search was sucesful %d times in %ld ms", sum3, (c2.tv_nsec - c1.tv_nsec)/100);
-		avg3 += (c2.tv_nsec - c1.tv_nsec)/100;
+		
 	
 
 		//trial IV -- one thread for each element in the array 
@@ -126,11 +122,7 @@ int main(int argc, char *argv[]){
 		}
 		clock_gettime(CLOCK_MONOTONIC, &c2);
 		printf("\ntrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
-		avg4 += (c2.tv_nsec - c1.tv_nsec)/100;
-//	}
-
-	printf("\n Averages of a ten time run....\n Trial I -- average: %ld ", (long double)avg1/c);
-	printf("\n TRIAL II -- average: "%ld \n TRIAL III -- average: %ld \n TRIAL IV -- average: %ld ", (long double)avg2/c, avg3/c, avg4/c);
+		
 	return 0;
 }
 //function to open file and scan in matrix data 
