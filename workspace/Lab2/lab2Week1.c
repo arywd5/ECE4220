@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 		printf("\nIncorrect Usage\n ./a.out <number to search> <file to search>");
 		return -1;
 	}
-	
+
 	if(!atoi(argv[1])){	//check that the number given can be converted to an integer 
 		printf("\nIncoreect Usage\n Please enter a valid number to search\n./a.out <number to search> <file to search>");
 		return -1;
@@ -52,73 +52,85 @@ int main(int argc, char *argv[]){
 	//declare time variables 
 	struct timespec c1, c2;
 	int nums[THREADS];
-	int i  = 0;
-	for(i = 0; i < THREADS; i++)
+	int i  = 0, c;
+	float avg1 = 0, avg2 = 0, avg3 = 0, avg4 = 0;
+	for(i = 0; i < THREADS; i++){
 		nums[i] = i;
-		
-	clock_gettime(CLOCK_MONOTONIC, &c1);
-		
-	//trial I -- one thread to search the entire matrix ;
-	pthread_t t1;
-	pthread_create(&t1, NULL, (void *)thread1, 0);
+	}
 
-	pthread_join(t1, NULL);
+//	for(c = 0; c < 10; c++){
 
-	clock_gettime(CLOCK_MONOTONIC, &c2);
-	printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c2.tv_nsec - c1.tv_nsec)/100);
+		clock_gettime(CLOCK_MONOTONIC, &c1);
+
+		//trial I -- one thread to search the entire matrix ;
+		pthread_t t1;
+		pthread_create(&t1, NULL, (void *)thread1, 0);
+
+		pthread_join(t1, NULL);
+
+		clock_gettime(CLOCK_MONOTONIC, &c2);
+		printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c2.tv_nsec - c1.tv_nsec)/100);
+		avg1 += (c2.tv_nsec - c1.tv_nsec)/100;
 
 
+		//trial II -- one thread for each row 
+		int sum = 0;
+		pthread_t t2[mData.rows];
+
+		clock_gettime(CLOCK_MONOTONIC, &c1);
+		for(i = 0; i < mData.rows; i++){
+			pthread_create(&(t2[i]), NULL, (void *)thread2, (void *)&nums[i]);
+		}
+
+		for(i = 0; i < mData.rows; i++){
+			pthread_join(t2[i], NULL);
+			sum += mData.count[i];
+		}
+		clock_gettime(CLOCK_MONOTONIC, &c2);	
+
+		printf("\nTriak II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
+		avg2 += (c2.tv_nsec - c1.tv_nsec)/100;
+
+
+		//trial III -- one thread for each column
+		int sum3 = 0;
+		pthread_t t3;
+
+		clock_gettime(CLOCK_MONOTONIC, &c1);
+		for(i = 0; i < mData.columns; i++){
+			pthread_create(&t3, NULL, (void *)thread3, (void *)&nums[i]);
+		}
+
+		for(i = 0; i < mData.columns; i++){
+			pthread_join(t3, NULL);
+			sum3 += mData.count[i];
+		}
+		clock_gettime(CLOCK_MONOTONIC, &c2);
+
+		printf("\nTrial III -- Search was sucesful %d times in %ld ms", sum3, (c2.tv_nsec - c1.tv_nsec)/100);
+		avg3 += (c2.tv_nsec - c1.tv_nsec)/100;
 	
-	//trial II -- one thread for each row 
-	int sum = 0;
-	pthread_t t2[mData.rows];
 
-	clock_gettime(CLOCK_MONOTONIC, &c1);
-	for(i = 0; i < mData.rows; i++){
-		pthread_create(&(t2[i]), NULL, (void *)thread2, (void *)&nums[i]);
-	}
+		//trial IV -- one thread for each element in the array 
+		int sum4 = 0;
+		pthread_t t4;
 
-	for(i = 0; i < mData.rows; i++){
-		pthread_join(t2[i], NULL);
-		sum += mData.count[i];
-	}
-	clock_gettime(CLOCK_MONOTONIC, &c2);	
+		clock_gettime(CLOCK_MONOTONIC, &c1);
+		for(i = 1; i <= (mData.rows * mData.columns); i++){
+			pthread_create(&t4, NULL, (void *)thread4, (void *)&nums[i]);
+		}
 
-	printf("\nTriak II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
+		for(i = 1; i <= (mData.rows * mData.columns); i++){
+			pthread_join(t4, NULL);
+			sum4 += mData.count[i];
+		}
+		clock_gettime(CLOCK_MONOTONIC, &c2);
+		printf("\ntrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
+		avg4 += (c2.tv_nsec - c1.tv_nsec)/100;
+//	}
 
-	//trial III -- one thread for each column
-	int sum3 = 0;
-	pthread_t t3;
-
-	clock_gettime(CLOCK_MONOTONIC, &c1);
-	for(i = 0; i < mData.columns; i++){
-		pthread_create(&t3, NULL, (void *)thread3, (void *)&nums[i]);
-	}
-
-	for(i = 0; i < mData.columns; i++){
-		pthread_join(t3, NULL);
-		sum3 += mData.count[i];
-	}
-	clock_gettime(CLOCK_MONOTONIC, &c2);
-
-	printf("\nTrial III -- Search was sucesful %d times in %ld ms", sum3, (c2.tv_nsec - c1.tv_nsec)/100);
-
-	//trial IV -- one thread for each element in the array 
-	int sum4 = 0;
-	pthread_t t4;
-
-	clock_gettime(CLOCK_MONOTONIC, &c1);
-	for(i = 1; i <= (mData.rows * mData.columns); i++){
-		pthread_create(&t4, NULL, (void *)thread4, (void *)&nums[i]);
-	}
-
-	for(i = 1; i <= (mData.rows * mData.columns); i++){
-		pthread_join(t4, NULL);
-		sum4 += mData.count[i];
-	}
-	clock_gettime(CLOCK_MONOTONIC, &c2);
-	printf("\ntrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
-
+	printf("\n Averages of a ten time run....\n Trial I -- average: %ld ", (long double)avg1/c);
+	printf("\n TRIAL II -- average: "%ld \n TRIAL III -- average: %ld \n TRIAL IV -- average: %ld ", (long double)avg2/c, avg3/c, avg4/c);
 	return 0;
 }
 //function to open file and scan in matrix data 
@@ -131,15 +143,15 @@ int fileOpen(char *filename){
 		printf("\nFile could not be opened please try again.");		
 		return 0;
 	}
-	
-		//first scan in the first two elements which hold the number of rows and columns 
-		fscanf(fPtr, "%d %d", &(mData.rows), &(mData.columns));
-		
-		for(i = 0; i < mData.rows; i++){
-			for(j = 0; j < mData.columns; j++){
-				fscanf(fPtr, "%d", &(mData.matrix[i][j]));
-			}
+
+	//first scan in the first two elements which hold the number of rows and columns 
+	fscanf(fPtr, "%d %d", &(mData.rows), &(mData.columns));
+
+	for(i = 0; i < mData.rows; i++){
+		for(j = 0; j < mData.columns; j++){
+			fscanf(fPtr, "%d", &(mData.matrix[i][j]));
 		}
+	}
 
 	fclose(fPtr);	
 	return 1;
@@ -148,7 +160,7 @@ int fileOpen(char *filename){
 void *thread1(void *ptr){
 	mData.count[0] = 0; //make sure to 
 	int i = 0, j = 0;
-	
+
 	for(i = 0; i < mData.rows; i++){
 		for(j = 0; j < mData.columns; j++){
 			if(mData.find == mData.matrix[i][j]){
@@ -166,7 +178,7 @@ void *thread2(void *ptr){
 	int i = 0;	
 	for(i = 0; i < mData.columns; i++){	
 		if(mData.matrix[ro][i] == mData.find)
-		mData.count[ro]++;
+			mData.count[ro]++;
 	}
 	pthread_exit(0);
 }
@@ -192,7 +204,7 @@ void *thread4(void *ptr){
 	for(i = 0; j >= mData.columns; i++){
 		j -= mData.columns;
 	}
-	
+
 	if(mData.find == mData.matrix[i][j]){
 		mData.count[index]++;
 	}
