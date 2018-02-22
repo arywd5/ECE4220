@@ -34,9 +34,9 @@
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="lab2Week1.c" partName="lab2Week1.c" title="lab2Week1.c" tooltip="/home/pi/ECE4220/workspace/Lab2/lab2Week1.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="424" selectionTopPixel="0"/>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="lab3week1.c" partName="lab3week1.c" title="lab3week1.c" tooltip="/home/pi/ECE4220/workspace/Lab3/lab3week1.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/pi/ECE4220/workspace/Lab3/lab3week1.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="81" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
@@ -229,7 +229,7 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="topRight" ratio="0.74934036" ratioLeft="568" ratioRight="190" relationship="2" relative="org.eclipse.ui.editorss">
+<info folder="true" part="topRight" ratio="0.892057" ratioLeft="876" ratioRight="106" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
 <page content="org.eclipse.cdt.make.ui.views.MakeView" label="Make Target"/>
@@ -246,159 +246,158 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/testProject/src/testProject.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/test/src/test.c"/>
 <editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
+<editor factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" uri="file:/home/pi/ECE4220/workspace/Lab3/lab3week1.c"/>
 </editors>
-<item historyLabel="test.c" index="1">
-<position info="not_deleted" x="81" y="0"/>
-</item>
-<item historyLabel="testProject.c" index="0">
-<position info="not_deleted" x="365" y="0"/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position info="not_deleted" x="2157" y="0"/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
-<position info="not_deleted" x="2157" y="0"/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
-<position/>
-</item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="836" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1996" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1817" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1965" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1968" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1988" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="2015" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1116" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1192" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1210" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="1209" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="2045" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="2150" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="2117" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="2120" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="2146" y="0"/>
 </item>
-<item historyLabel="lab2Week1.c" index="2">
+<item historyLabel="lab2Week1.c" index="0">
 <position info="not_deleted" x="614" y="0"/>
 </item>
-<item active="true" historyLabel="lab2Week1.c" index="2">
-<position info="not_deleted" x="699" y="0"/>
+<item historyLabel="lab2Week1.c" index="0">
+<position info="not_deleted" x="424" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="834" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="631" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="704" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="775" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="961" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1139" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1120" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1121" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="199" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="224" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1468" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="2024" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="2516" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1179" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1352" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1891" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1929" y="0"/>
+</item>
+<item historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1567" y="0"/>
+</item>
+<item active="true" historyLabel="lab3week1.c" index="1">
+<position info="not_deleted" x="1501" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -417,6 +416,9 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lab3week1.c" tooltip="/home/pi/ECE4220/workspace/Lab3/lab3week1.c">
+<persistable uri="file:/home/pi/ECE4220/workspace/Lab3/lab3week1.c"/>
+</file>
 <file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lab2Week1.c" tooltip="/home/pi/ECE4220/workspace/Lab2/lab2Week1.c">
 <persistable uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
 </file>

@@ -123,6 +123,8 @@ void *read1(args *ptr){
 	//Start timer 
 	timerfd_settime(timer, 0, &itval, NULL);
 
+	read(timer, &num_periods, sizeof(num_periods));
+
 
 	while(!feof(data->fPtr)){									//while loop to get a line at a time from the file 
 		read(timer, &num_periods, sizeof(num_periods));			
@@ -156,6 +158,8 @@ void *join(args *ptr){
 
 	//Start timer
 	timerfd_settime(timer, 0, &itval, NULL);
+	
+	read(timer, &num_periods, sizeof(num_periods));
 
 	for(i = 0; i < 16; i++){									//for loop to go sixteen times because there is sixteen lines in the song 
 		read(timer, &num_periods, sizeof(num_periods));
