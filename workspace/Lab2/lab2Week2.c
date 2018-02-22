@@ -91,10 +91,10 @@ int main(){
 	fclose(ffPtr);
 	fclose(lfPtr);
 	free(buff);	
-/*	for(i = 0; i < 16; i++)
-		free(*(stringArray +i));
-	free(stringArray);
-*/		
+	for(i = 0; i < 16; i++)
+		free(*(t3.song + i));
+	free(t3.song);
+		
 	return 0;
 }
 
