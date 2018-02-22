@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 		pthread_join(t1, NULL);
 
 		clock_gettime(CLOCK_MONOTONIC, &c2);
-		printf("/nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c2.tv_nsec - c1.tv_nsec)/100);
+		printf("\nTrial I -- Search was sucesfull %d times in %ld ms", mData.count[0], (c2.tv_nsec - c1.tv_nsec)/100);
 		
 
 		//trial II -- one thread for each row 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]){
 		}
 		clock_gettime(CLOCK_MONOTONIC, &c2);						//get ending time for this trial 
 		//print results to user 
-		printf("\nTriak II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
+		printf("\nTrial II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
 		
 
 
@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
 		}
 		clock_gettime(CLOCK_MONOTONIC, &c2);						//get clock time after search is finished 
 		//print results to user 
-		printf("\ntrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
+		printf("\nTrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
 		
 	return 0;														//exit function 
 }

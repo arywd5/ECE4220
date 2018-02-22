@@ -14,7 +14,7 @@
 
 
 #define MY_PRIORITY 51
-#define PERIOD1 315000
+#define PERIOD1 900000
 #define WAIT1 5000
 #define WAIT2 10000
 #define WAIT3 15000
@@ -76,12 +76,12 @@ int main(){
 
 	//join threads 
 	pthread_join(thread1, NULL);									//join all threads 
-	pthread_join(thread2, NULL);
-	pthread_join(thread3, NULL);	
+	pthread_join(thread3, NULL);
+	pthread_join(thread2, NULL);	
 
 	//print results to the user 
-	for(i = 0; i < 20; i++){
-		printf("\n%s", *(stringArray + i));
+	for(i = 0; i < 17; i++){
+		printf("\n%s", *(t3.song + i));
 	}
 
 

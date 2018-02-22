@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="21" version="2.0">
+<workbench progressCount="26" version="2.0">
 <workbenchAdvisor/>
-<window height="1056" width="1248" x="65" y="24">
+<window height="1056" width="1248" x="1312" y="24">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -30,14 +30,13 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="lab2Week1.c" partName="lab2Week1.c" title="lab2Week1.c" tooltip="/home/pi/ECE4220/workspace/Lab2/lab2Week1.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" uri="file:/home/pi/ECE4220/workspace/Lab2/lab2Week1.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1047" selectionTopPixel="164"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="424" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
