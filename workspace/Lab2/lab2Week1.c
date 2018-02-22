@@ -71,19 +71,19 @@ int main(int argc, char *argv[]){
 
 		//trial II -- one thread for each row 
 		int sum = 0;
-		pthread_t t2[mData.rows];
+		pthread_t t2[mData.rows];									//create array of threads to use in for loop
 
-		clock_gettime(CLOCK_MONOTONIC, &c1);
-		for(i = 0; i < mData.rows; i++){
+		clock_gettime(CLOCK_MONOTONIC, &c1);						//get current time before the search 
+		for(i = 0; i < mData.rows; i++){							//for loop to create a thread for reach row 
 			pthread_create(&(t2[i]), NULL, (void *)thread2, (void *)&nums[i]);
 		}
 
-		for(i = 0; i < mData.rows; i++){
+		for(i = 0; i < mData.rows; i++){							//for loop to join thread for each row 
 			pthread_join(t2[i], NULL);
-			sum += mData.count[i];
+			sum += mData.count[i];									//sum our counts in this for loop 
 		}
-		clock_gettime(CLOCK_MONOTONIC, &c2);	
-
+		clock_gettime(CLOCK_MONOTONIC, &c2);						//get ending time for this trial 
+		//print results to user 
 		printf("\nTriak II -- Search was sucessful %d times in %ld ms", sum, (c2.tv_nsec - c1.tv_nsec)/100);
 		
 
@@ -92,17 +92,17 @@ int main(int argc, char *argv[]){
 		int sum3 = 0;
 		pthread_t t3;
 
-		clock_gettime(CLOCK_MONOTONIC, &c1);
-		for(i = 0; i < mData.columns; i++){
+		clock_gettime(CLOCK_MONOTONIC, &c1);						//get clock time before the search 
+		for(i = 0; i < mData.columns; i++){							//for loop to create a thread for each column
 			pthread_create(&t3, NULL, (void *)thread3, (void *)&nums[i]);
 		}
 
-		for(i = 0; i < mData.columns; i++){
-			pthread_join(t3, NULL);
-			sum3 += mData.count[i];
+		for(i = 0; i < mData.columns; i++){							//for loop to join threads for each columns 
+			pthread_join(t3, NULL);		
+			sum3 += mData.count[i];									//also sum our counters
 		}
-		clock_gettime(CLOCK_MONOTONIC, &c2);
-
+		clock_gettime(CLOCK_MONOTONIC, &c2);						//get clock time after search is complete 
+		//prut results to the user 
 		printf("\nTrial III -- Search was sucesful %d times in %ld ms", sum3, (c2.tv_nsec - c1.tv_nsec)/100);
 		
 	
@@ -111,52 +111,54 @@ int main(int argc, char *argv[]){
 		int sum4 = 0;
 		pthread_t t4;
 
-		clock_gettime(CLOCK_MONOTONIC, &c1);
-		for(i = 1; i <= (mData.rows * mData.columns); i++){
+		clock_gettime(CLOCK_MONOTONIC, &c1);						//get clocktime before the search has started 
+		for(i = 1; i <= (mData.rows * mData.columns); i++){			//for loop to create thread for each element of the array 
 			pthread_create(&t4, NULL, (void *)thread4, (void *)&nums[i]);
 		}
 
-		for(i = 1; i <= (mData.rows * mData.columns); i++){
+		for(i = 1; i <= (mData.rows * mData.columns); i++){			//for loop to join threads for each element 
 			pthread_join(t4, NULL);
-			sum4 += mData.count[i];
+			sum4 += mData.count[i];									//sum counters 
 		}
-		clock_gettime(CLOCK_MONOTONIC, &c2);
+		clock_gettime(CLOCK_MONOTONIC, &c2);						//get clock time after search is finished 
+		//print results to user 
 		printf("\ntrial 4 -- Search was sucesfull %d times in %ld ms", sum4, (c2.tv_nsec - c1.tv_nsec)/100);
 		
-	return 0;
+	return 0;														//exit function 
 }
+
 //function to open file and scan in matrix data 
 int fileOpen(char *filename){
 	FILE *fPtr;
 	int i = 0, j = 0;
 
-	fPtr = fopen(filename, "r");
-	if(fPtr == NULL){
+	fPtr = fopen(filename, "r");									//open file for reading 
+	if(fPtr == NULL){												//check that file opened properly 
 		printf("\nFile could not be opened please try again.");		
 		return 0;
 	}
 
 	//first scan in the first two elements which hold the number of rows and columns 
-	fscanf(fPtr, "%d %d", &(mData.rows), &(mData.columns));
+	fscanf(fPtr, "%d %d", &(mData.rows), &(mData.columns));			
 
-	for(i = 0; i < mData.rows; i++){
-		for(j = 0; j < mData.columns; j++){
-			fscanf(fPtr, "%d", &(mData.matrix[i][j]));
+	for(i = 0; i < mData.rows; i++){								//for loop to gp through rows 
+		for(j = 0; j < mData.columns; j++){							//for loop to go through each element in the column 
+			fscanf(fPtr, "%d", &(mData.matrix[i][j]));				//scan in data and save to our fixed matrix 
 		}
 	}
 
-	fclose(fPtr);	
+	fclose(fPtr);													//close file to avoid memory leak
 	return 1;
 }
 //function to search through a matric of data and return the amount of times a certain number was found 
 void *thread1(void *ptr){
-	mData.count[0] = 0; //make sure to 
+	mData.count[0] = 0; 											//make sure to initialize count to 0 
 	int i = 0, j = 0;
 
-	for(i = 0; i < mData.rows; i++){
+	for(i = 0; i < mData.rows; i++){								//use nested for loops to parse array 
 		for(j = 0; j < mData.columns; j++){
-			if(mData.find == mData.matrix[i][j]){
-				mData.count[0]++;
+			if(mData.find == mData.matrix[i][j]){					//if the variable we are finding is the same 
+				mData.count[0]++;										//incremeent the counter 
 			}
 		}
 	}
@@ -165,40 +167,40 @@ void *thread1(void *ptr){
 //function to search through a specific row of a matrix and count the number of times a certain number was found 
 void *thread2(void *ptr){
 
-	int ro = (*(int *)ptr);
-	mData.count[ro] = 0;
+	int ro = (*(int *)ptr);											//type case pointer so we can access it 
+	mData.count[ro] = 0;											//intiazlize our count to zero 
 	int i = 0;	
-	for(i = 0; i < mData.columns; i++){	
+	for(i = 0; i < mData.columns; i++){								//for loop to parse through all the elements in a row 
 		if(mData.matrix[ro][i] == mData.find)
-			mData.count[ro]++;
+			mData.count[ro]++;										//increment counter if the element matched our find variable 
 	}
 	pthread_exit(0);
 }
 //function to search each column of an array and count number of time a certain number was found 
 void *thread3(void *ptr){
 
-	int col = *((int *)ptr);
-	mData.count[col] = 0;
+	int col = *((int *)ptr);										//type case pointer so we can use this variable 
+	mData.count[col] = 0;											//initialize our counter to zero 
 	int i = 0; 
 
-	for( i = 0; i < mData.rows; i++){
+	for( i = 0; i < mData.rows; i++){								//for loop to go through each row of the specified column 
 		if(mData.matrix[i][col] == mData.find)
-			mData.count[col]++;
+			mData.count[col]++;										//if the elements equal then increment our counter 
 	}
 	pthread_exit(0);
 }
 //function to check if a certain element is the same as a given number 
 void *thread4(void *ptr){
-	int index = *((int *)ptr);
+	int index = *((int *)ptr);										//type cast the pointer to access the element number 
 	int i, j = index;
 	mData.count[index] = 0;
 
-	for(i = 0; j >= mData.columns; i++){
-		j -= mData.columns;
-	}
+	for(i = 0; j >= mData.columns; i++){							//for loop to find the row and column numbers
+		j -= mData.columns;											// subtract the number of rows from the index as long as its greater than the
+	}																//number of columns, where this for loop breaks i & j will respectivley be [i][j] row and column
 
-	if(mData.find == mData.matrix[i][j]){
-		mData.count[index]++;
+	if(mData.find == mData.matrix[i][j]){							//checkt if our element is equalt to the to find variable 
+		mData.count[index]++;										//increment counter 
 	}
 	pthread_exit(0);
 }
