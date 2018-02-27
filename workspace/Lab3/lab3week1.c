@@ -53,12 +53,24 @@ int main(int argc, char* argv[]){
 	pinMode(YL, OUTPUT);
 	pinMode(BUTTON, INPUT);
 
-	//create pthreads 
+	//create infinite loop 
+	while(1){
+
+		if(digitalRead(BUTTON)){
+			
+
+		}
 	
-	
+
+
+
+
+
+	}
 
 	return 0;
 }
+/*
 //thread function to control the green traffic light 
 void *greenl(void *ptr){
 	
@@ -87,8 +99,9 @@ void *greenl(void *ptr){
 		
 	}
 
-	pthread_exit)(0);
+	pthread_exit(0);
 }
+
 //thread to control the red pedestrian light 
 void *redl(){
 	args *data = (args *)(ptr);
@@ -114,4 +127,4 @@ void *redl(){
 		
 	
 	pthread_exit(0);
-}
+}*/
