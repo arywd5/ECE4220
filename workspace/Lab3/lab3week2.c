@@ -12,6 +12,7 @@
 #include <sched.h>
 #include <stdint.h>
 #include <sys/timerfd.h>
+#include <semaphore.h>
 //header files 
 #include "ece4220lab3.h"
 
@@ -19,21 +20,24 @@
 #define GL 4			//pin number for the green led 
 #define YL 3			//pin number for the yellow led 
 #define BUTTON 16		//pin number for the psuh button 
-#define GLP 51			//prioriy for the green light 
-#define RLP 52			//priority for the red light 
-#define YLP 51			//priority for the yellow light 
+#define GLP 53			//prioriy for the green light 
+#define RLP 53			//priority for the red light 
+#define YLP 54			//priority for the yellow light 
+#define STIME 100		//time in microseconds we want to sleep for after releasing the semaphore 
+#define PER 4000000		//period time in microseconds 
+#define INIT_VALUE 1		//initial value to use when initializing our semphore 
 
+//our semaphore to use in the threads 
+sem_t sem;
 
 void *greenl(void *ptr);		//thread function to control the green light 
 void *yellowl(void *ptr);		//thread function to control the yellow light 
 void *redl(void *ptr);			//thread function to control the red pedestrian light 
 
 typedef struct arguments{
-	int waitnsec;
 	int pinnum;
 	int priority;
-	long nperiod;
-	
+	int type;
 }args;
 
 
@@ -53,93 +57,75 @@ int main(int argc, char* argv[]){
 	pinMode(YL, OUTPUT);
 	pinMode(BUTTON, INPUT);
 
+	//make sure all lights are turned off 
 	digitalWrite(RL, 0);
 	digitalWrite(YL, 0);
 	digitalWrite(GL, 0);
 
-	while(!digitalRead(20)){
+	//create arguments to send to the threads 
+	args red, yellow, green;
+	red.pinnum = RL;
+	red.priority = RLP;
+	yellow.pinnum = YL;
+	yellow.priority = YLP;
+	green.pinnum = GL;
+	green.priority = GLP;
 
-		if(check_button()){
-			digitalWrite(RL, 1);
-			sleep(10);
-			digitalWrite(RL, 0);
-			clear_button();
-			beenPressed = 0;
-		}
+	//create threads
+	sem_init(&sem, 0, INIT_VALUE);	
+ 	pthread_t rt, yt, gt;
+	pthread_create(&rt, NULL, (void *)&redl, (void *)&red);
+	pthread_create(&yt, NULL, (void *)&greenl, (void *)&yellow);
+	pthread_create(&gt, NULL, (void *)&greenl, (void *)&green);
 
-		digitalWrite(YL, 1);
-		sleep(10);
-		digitalWrite(YL, 0);
-			
-		 if(check_button()){
-                        digitalWrite(RL, 1);
-                        sleep(10);
-                        digitalWrite(RL, 0);
-                        clear_button();
-                }
-	
-		digitalWrite(GL, 1);
-		sleep(10);
-		digitalWrite(GL, 0);
-	}
-
+	pthread_join(rt, NULL);
+	pthread_join(yt, NULL);
+		
 	return 0;
 }
-/*
+
 //thread function to control the green traffic light 
 void *greenl(void *ptr){
-	
-	args *data = (args *)(ptr);
-	
-	//create timer 
-	int timer = timerfd_create(CLOCK_MONOTONIC, 0);
-	struct itimerspec itval;
 
-	//set up timer 
-	itval.it_value.tv_sec = 0;
-	itval.it_value.tv_nsec = data->waitnsec;
-	
-	//set up period 
-	itval.it_interval.tv_sec = 0;
-	itval.it_interval.tv_nsec = data->nperiod;
-	
+	args *data = (args *)(ptr);
+
 	struct sched_param param;
 	param.sched_priority = data->priority;
 	sched_setscheduler(0, SCHED_FIFO, &param);
 	uint64_t num_periods = 0;
-	
+
 	while(1){ 
-		
-		
-		
+		sem_wait(&sem);
+		digitalWrite(data->pinnum, 1);
+		usleep(PER);
+		digitalWrite(data->pinnum, 0);
+		sem_post(&sem);		
+		usleep(STIME);
 	}
 
 	pthread_exit(0);
 }
 
 //thread to control the red pedestrian light 
-void *redl(){
-	args *data = (args *)(ptr);
-		
-		//create timer 
-		int timer = timerfd_create(CLOCK_MONOTONIC, 0);
-		struct itimerspec itval;
+void *redl(void *ptr){
+	args *data = (args *)(ptr);		
 
-		//set up timer 
-		itval.it_value.tv_sec = 0;
-		itval.it_value.tv_nsec = data->waitnsec;
-		
-		//set up period 
-		itval.it_interval.tv_sec = 0;
-		itval.it_interval.tv_nsec = data->nperiod;
-		
 	struct sched_param param;
 	param.sched_priority = data->priority;
 	sched_setscheduler(0, SCHED_FIFO, &param);
 	uint64_t num_periods = 0;
-		
-	while	
-		
-	
+
+	while(1){
+		if(check_button()){
+			sem_wait(&sem);
+			digitalWrite(data->pinnum, 1);
+			usleep(PER);
+			digitalWrite(data->pinnum, 0);
+			sem_post(&sem);
+			usleep(STIME);
+			clear_button();
+		}
+	}		
+
 	pthread_exit(0);
-}*/
+}
