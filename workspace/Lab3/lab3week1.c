@@ -4,10 +4,11 @@
 //libraries 
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include <time.h>
-#include <lwiringpi.h>
+#include <wiringPi.h>
 #include <unistd.h>
-#include <fdntl.h>
+#include <fcntl.h>
 #include <sched.h>
 #include <stdint.h>
 #include <sys/timerfd.h>
@@ -53,19 +54,36 @@ int main(int argc, char* argv[]){
 	pinMode(YL, OUTPUT);
 	pinMode(BUTTON, INPUT);
 
-	//create infinite loop 
+	int beenPressed = 0;
+	struct timespec c1, c2;
+	digitalWrite(RL, 0);
+	digitalWrite(YL, 0);
+	digitalWrite(GL, 0);
+
 	while(1){
 
-		if(digitalRead(BUTTON)){
-			
-
+		if(beenPressed){
+			digitalWrite(RL, 1);
+			sleep(10);
+			digitalWrite(RL, 0);
+			clear_button();
+			beenPressed = 0;
 		}
+
+		digitalWrite(YL, 1);
+		sleep(10);
+		digitalWrite(YL, 0);
+			
+		 if(check_button()){
+                        digitalWrite(RL, 1);
+                        sleep(10);
+                        digitalWrite(RL, 0);
+                        clear_button();
+                }
 	
-
-
-
-
-
+		digitalWrite(GL, 1);
+		sleep(10);
+		digitalWrite(GL, 0);
 	}
 
 	return 0;
