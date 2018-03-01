@@ -43,8 +43,8 @@ typedef struct arguments{
 
 int main(int argc, char* argv[]){
 
-	if(argc != 2){		//check that the user entered the correct input arguments 
-		printf("\nIncorrect Usage\nCorrect Usage: ./a.out <policy>\nFIFO - 1, RR - 2");
+	if(argc != 4){		//check that the user entered the correct input arguments 
+		printf("\nIncorrect Usage\nCorrect Usage: ./a.out <Priority PTL1> <priority PTL2> <priority PPL>\n");
 		return -1;
 	}
 
@@ -65,11 +65,11 @@ int main(int argc, char* argv[]){
 	//create arguments to send to the threads 
 	args red, yellow, green;
 	red.pinnum = RL;
-	red.priority = RLP;
+	red.priority = atoi(argv[3]);
 	yellow.pinnum = YL;
-	yellow.priority = YLP;
+	yellow.priority = atoi(argv[1]);
 	green.pinnum = GL;
-	green.priority = GLP;
+	green.priority = atoi(argv[2]);
 
 	//create threads
 	sem_init(&sem, 0, INIT_VALUE);	
