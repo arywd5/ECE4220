@@ -34,7 +34,7 @@ void *greenl(void *ptr);		//thread function to control the green light
 void *yellowl(void *ptr);		//thread function to control the yellow light 
 void *redl(void *ptr);			//thread function to control the red pedestrian light 
 
-typedef struct arguments{
+typedef struct arguments{		//structure to pass arguments to our thread 
 	int pinnum;
 	int priority;
 	int type;
@@ -87,19 +87,19 @@ int main(int argc, char* argv[]){
 //thread function to control the green traffic light 
 void *greenl(void *ptr){
 
-	args *data = (args *)(ptr);
+	args *data = (args *)(ptr);				//typecast our void pointer so we can access it in the thread 
 
-	struct sched_param param;
+	struct sched_param param;				//set up shceduler and elevate priority with the given number 
 	param.sched_priority = data->priority;
 	sched_setscheduler(0, SCHED_FIFO, &param);
 	uint64_t num_periods = 0;
 
-	while(1){ 
-		sem_wait(&sem);
-		digitalWrite(data->pinnum, 1);
-		usleep(PER);
-		digitalWrite(data->pinnum, 0);
-		sem_post(&sem);		
+	while(1){ 						//enter inifnite while loop to control the light 
+		sem_wait(&sem);					//wait for access to the semaphore 
+		digitalWrite(data->pinnum, 1);			//then turn the light on 
+		usleep(PER);					//sleep for our period 
+		digitalWrite(data->pinnum, 0);			//turn the light off 
+		sem_post(&sem);					//release the semaphore 
 		usleep(STIME);
 	}
 
@@ -108,22 +108,23 @@ void *greenl(void *ptr){
 
 //thread to control the red pedestrian light 
 void *redl(void *ptr){
-	args *data = (args *)(ptr);		
+	args *data = (args *)(ptr);				//typecase the void pointer to so we can access it 	
 
-	struct sched_param param;
+	struct sched_param param;				//set up scheduler and elevate priority 
 	param.sched_priority = data->priority;
 	sched_setscheduler(0, SCHED_FIFO, &param);
 	uint64_t num_periods = 0;
+	clear_button();						//clear button to make sure it doesnt turn on at the begining 
 
-	while(1){
-		if(check_button()){
-			sem_wait(&sem);
-			digitalWrite(data->pinnum, 1);
-			usleep(PER);
-			digitalWrite(data->pinnum, 0);
-			sem_post(&sem);
-			usleep(STIME);
-			clear_button();
+	while(1){						//enter inifinite while loop tpo control the pedestrian light 
+		if(check_button()){				//first we want to check if the button has been pressed 
+			sem_wait(&sem);				//if so we wait fo rthe semaphore to be realeased 
+			digitalWrite(data->pinnum, 1);		//then turn on the pedestrian light 
+			usleep(PER);				//sleep for our period 
+			digitalWrite(data->pinnum, 0);		//turn off the light 
+			sem_post(&sem);				//release the sempahore 
+			usleep(STIME);				//sleep for a small time 
+			clear_button();				//then clear button so we can check it once again 
 		}
 	}		
 

@@ -22,11 +22,9 @@
 #define GLP 51			//prioriy for the green light 
 #define RLP 52			//priority for the red light 
 #define YLP 51			//priority for the yellow light 
+#define PERIOD 2
 
-
-void *greenl(void *ptr);		//thread function to control the green light 
-void *yellowl(void *ptr);		//thread function to control the yellow light 
-void *redl(void *ptr);			//thread function to control the red pedestrian light 
+void *runLights(void *ptr);		//thread function to control the lights  
 
 typedef struct arguments{
 	int waitnsec;
@@ -37,12 +35,7 @@ typedef struct arguments{
 }args;
 
 
-int main(int argc, char* argv[]){
-
-	if(argc != 2){		//check that the user entered the correct input arguments 
-		printf("\nIncorrect Usage\nCorrect Usage: ./a.out <policy>\nFIFO - 1, RR - 2");
-		return -1;
-	}
+int main(){
 
 	//setup function 
 	wiringPiSetupGpio();
@@ -52,94 +45,46 @@ int main(int argc, char* argv[]){
 	pinMode(GL, OUTPUT);
 	pinMode(YL, OUTPUT);
 	pinMode(BUTTON, INPUT);
+	pinMode(20, INPUT);
 
 	digitalWrite(RL, 0);
 	digitalWrite(YL, 0);
 	digitalWrite(GL, 0);
 
-	while(!digitalRead(20)){
+	pthread_t p1;
+	pthread_create(&p1, NULL, (void*)runLights, NULL);
 
-		if(check_button()){
-			digitalWrite(RL, 1);
-			sleep(10);
-			digitalWrite(RL, 0);
-			clear_button();
-			beenPressed = 0;
-		}
-
-		digitalWrite(YL, 1);
-		sleep(10);
-		digitalWrite(YL, 0);
-			
-		 if(check_button()){
-                        digitalWrite(RL, 1);
-                        sleep(10);
-                        digitalWrite(RL, 0);
-                        clear_button();
-                }
-	
-		digitalWrite(GL, 1);
-		sleep(10);
-		digitalWrite(GL, 0);
-	}
+	pthread_join(p1, NULL);
 
 	return 0;
 }
-/*
-//thread function to control the green traffic light 
-void *greenl(void *ptr){
-	
-	args *data = (args *)(ptr);
-	
-	//create timer 
-	int timer = timerfd_create(CLOCK_MONOTONIC, 0);
-	struct itimerspec itval;
+//thread function to control the traffic lights 
+void *runLights(void *ptr){
 
-	//set up timer 
-	itval.it_value.tv_sec = 0;
-	itval.it_value.tv_nsec = data->waitnsec;
-	
-	//set up period 
-	itval.it_interval.tv_sec = 0;
-	itval.it_interval.tv_nsec = data->nperiod;
-	
-	struct sched_param param;
-	param.sched_priority = data->priority;
-	sched_setscheduler(0, SCHED_FIFO, &param);
-	uint64_t num_periods = 0;
-	
-	while(1){ 
-		
-		
-		
+	 while(!digitalRead(20)){			//while loop to control the lights 
+                if(check_button()){			//first check if the button has been pressed 
+                        digitalWrite(RL, 1);		//then turn the light on 
+                        sleep(PERIOD);
+                        digitalWrite(RL, 0);
+                        clear_button();
+                }
+
+                digitalWrite(YL, 1);			//turn on yellow loght 
+                sleep(PERIOD);
+                digitalWrite(YL, 0);			
+
+                 if(check_button()){			//check again if the button has been pressed 
+                        digitalWrite(RL, 1);		//if so turn on red light and clear button
+                        sleep(PERIOD);
+                        digitalWrite(RL, 0);
+                        clear_button();
+                }
+
+                digitalWrite(GL, 1);			//turn on green light 
+                sleep(PERIOD);
+                digitalWrite(GL, 0);	
 	}
 
 	pthread_exit(0);
 }
 
-//thread to control the red pedestrian light 
-void *redl(){
-	args *data = (args *)(ptr);
-		
-		//create timer 
-		int timer = timerfd_create(CLOCK_MONOTONIC, 0);
-		struct itimerspec itval;
-
-		//set up timer 
-		itval.it_value.tv_sec = 0;
-		itval.it_value.tv_nsec = data->waitnsec;
-		
-		//set up period 
-		itval.it_interval.tv_sec = 0;
-		itval.it_interval.tv_nsec = data->nperiod;
-		
-	struct sched_param param;
-	param.sched_priority = data->priority;
-	sched_setscheduler(0, SCHED_FIFO, &param);
-	uint64_t num_periods = 0;
-		
-	while	
-		
-	
-	pthread_exit(0);
-}*/
