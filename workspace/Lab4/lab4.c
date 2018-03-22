@@ -17,13 +17,20 @@
 #define PERIOD 75000000
 #define PRIORITY 51
 
-typedef struct buffer{				//structure to pass to threads with all the time information 
+typedef struct{					//structure to pass to threads with all the time information 
 	struct timespec previous;
 	struct timespec next;
+	struct timespec hittime;
 	int before;
 	int after;
-} buff;
+	int actual;
+} data;
 
+typedef struct{
+	int N_pipe2;
+	int gpsdata;
+	struct timespec t;
+} buff;
 
 void *thread0(void *num);			//thread function to print values to the screen after reading from N_pipe1
 void process2(int pipe);			//process to complete the second part of this lab 
@@ -39,25 +46,28 @@ int main(){
 
 
 	//declare pipe variables 
-	int N_pipe1, N_pipe2;
+	int N_pipe1;
 	int dummy;
 	buff buffer;
 
-	if((N_pipe1 = open("N_pipe2", O_RDWR)) < 0){     	        //open pipe
+	if((buffer.N_pipe2 = open("N_pipe2", O_RDWR)) < 0){    	       	 	//open pipe
                         printf("N_pipe1 error\n");                              //if the pipe did not open properly exit
                         exit(-1);
 
-
+	}
 	if((dummy = fork()) < 0){						//fork the program and 
 		printf("\nError Forking lab4.c");				//check for successful operation
 		exit(-1);
 	}	
 
 	if(dummy == 0){								//for process 2 use the child 
-		 process2(N_pipe2);
+		 process2(buffer.N_pipe2);
 	}
 
 	else{
+
+		pthread_t t0;
+		pthread_create(&t0, NULL, (void *)thread0, (void *)&buffer);	//create thread to process 
 
 		if((N_pipe1 = open("/tmp/N_pipe1", O_RDONLY)) < 0){		//open pipe
 			printf("N_pipe1 error\n");				//if the pipe did not open properly exit
@@ -65,29 +75,40 @@ int main(){
 		}
 
 		while(1){							//while loop to read in data from the GPS_device
-			if(read(N_pipe1, &(buffer.before), sizeof(buffer.before)) < 0){		//read in pipe and store to buffer 
+			if(read(N_pipe1, &(buffer.gpsdata), sizeof(buffer.gpsdata)) < 0){		//read in pipe and store to buffer 
 				printf("\nN_pipe1 reading error\n");
 				exit(-1);
 			}
-			clock_gettime(&(buffer.previous), CLOCK_MONOTONIC);
+			clock_gettime(CLOCK_MONOTONIC, &(buffer.t));
 		}
+		pthread_join(t0, NULL);
 	}
 	return 0;
 }
 //thread0 function that prints buffer to the screen to make sure its working properly 
 void *thread0(void *num){
-	int N_pipe2 = *((num *)num);
-	struct timespec clock;	
+	buff buffer = *((buff *)num);
 	int dummy;
+	data info;
+	info.previous = buffer.t;
+	info.before = buffer.gpsdata;
 
 	while(1){								//enter infinite while loop 
-		if((read(N_pipe2, &clock, sizeof(clock))) < 0){			//read in from pipe and check for errors 
+		if((read(buffer.N_pipe2, &(info.hittime), sizeof(clock))) < 0){	//read in from pipe and check for errors 
 			printf("\nError Reading in from N_pipe2 in thread0...");
 			exit(-1);
 		}
-		
-		pthread_t newThread;						//create a new thread to use the timestamp 
-		pthread_create(&newThread, NULL, (void *)interpolate, (void *)clock);
+	if((dummy = fork()) < 0){						//fork our process because the button has been pressed 
+		printf("\nError forking in thread 0...");			//check for errors 
+		exit(-1);
+	}	
+		if(dummy == 0){							//only our child process will create the new thread while pur main process loops 
+			usleep(250000000);					//sleep for 250 ms so buffer will update 
+			info.next = buffer.t;
+			info.after = buffer.gpsdata;				//set our new values in the next hit	
+			pthread_t newThread;					//create a new thread to use the timestamp 
+			pthread_create(&newThread, NULL, (void *)interpolate, (void *)&info);
+		}
 	}
 
 	pthread_exit(0);
@@ -136,10 +157,15 @@ void *buttonThread(void *ptr){
 }
 //thread function to interpolate the data 
 void *interpolate(void *ptr){
+	data info = *((data *)ptr);						//typecast our void pointer so we can access the data 
+	double slope, intercept;
 	
-
-
-
-
+	slope = (double)((info.after - info.before)/(info.previous.tv_nsec - info.next.tv_nsec));
+	intercept =(double)((info.next.tv_nsec) - (slope*info.after));
+	
+	info.actual = (slope*info.hittime.tv_nsec) + intercept;
+	printf("\nPrevious GPS_data: %d at time %lf", info.before, info.previous.tv_nsec);
+	printf("\nActual GPS_data: %d at time %lf", info.actual, info.hittime.tv_nsec);
+	printf("\nAfter GPS_data: %d at time %lf", info.after, info.next.tv_nsec);
 }
 
