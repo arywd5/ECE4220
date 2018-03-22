@@ -51,12 +51,6 @@ int main(){
 	buffer->flag = &f;
 	buffer->pipe = &N_pipe2;
 	
-//	pthread_create(&t0, NULL, (void *)thread0, (void *)buffer);             //create thread0 that will read for button press
-
-//	if((N_pipe2 = open("N_pipe2", O_RDWR)) < 0){                      //open pipe
-  //              printf("N_pipe2 error\n");                              //if the pipe did not open properly exit
-    //            exit(-1);
-//        }
 	if((dummy = fork()) < 0){                                               //fork the program and
                 printf("\nError Forking lab4.c");                               //check for successful operation
                 exit(-1);
@@ -66,8 +60,9 @@ int main(){
                 printf("\nForked calling process 2");
 		process2(N_pipe2);
         }
-
-	 if((N_pipe1 = open("/tmp/N_pipe1", O_RDONLY)) < 0){                     //open pipe
+	else if (dummy != 0){
+		pthread_create(&t0, NULL, (void *)thread0, (void *)buffer);
+		if((N_pipe1 = open("/tmp/N_pipe1", O_RDONLY)) < 0){                     //open pipe
                         printf("N_pipe1 error\n");                                      //if the pipe did not open properly exit
                         exit(-1);
                 }
@@ -83,8 +78,8 @@ int main(){
 				usleep(1000);
 			}
 		}
-
-//	 pthread_join(t0, NULL);
+	}
+	 pthread_join(t0, NULL);
 
 	return 0;
 }
