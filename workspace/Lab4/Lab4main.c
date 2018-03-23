@@ -26,12 +26,12 @@ typedef struct{
 	int *gps;
 	struct timespec *t;
 	struct timespec hit;
-	int *simple[1];
+	int *simple;
 } data;
 
 typedef struct{
 	double actual;
-	struct timespec bt, at, pt;
+	uint64_t bt, at, pt;
 	int before, after;
 } printArgs;
 
@@ -58,9 +58,10 @@ int main(){
 		printf("\nError Creating simple pipe");
 		exit(-1);
 	}
-//	buffer->simple = &(simp[1]);
 
-//	pthread_create(&s0, NULL, (void *)print, (void *)&simp);
+	buffer->simple = &(simp[1]);
+
+//	pthread_create(&s0, NULL, (void *)print, (void *)&(simp[0]));
 	pthread_create(&t0, NULL, (void *)thread0, (void *)buffer);
 	if((N_pipe1 = open("/tmp/N_pipe1", O_RDWR)) < 0){                     //open pipe
 		printf("N_pipe1 error\n");                                      //if the pipe did not open properly exit
@@ -73,7 +74,7 @@ int main(){
 			exit(-1);
 		}
 		else{	
-		//	printf("\n%p -> %d", &number, number);	
+			//	printf("\n%p -> %d", &number, number);	
 			clock_gettime(CLOCK_MONOTONIC, &gpsT);	
 			f = 1;
 			usleep(1000);
@@ -95,10 +96,11 @@ void *thread0(void *num){
 	int N_pipe2;
 	N_pipe2 = open("N_pipe2", O_RDONLY);
 	if(N_pipe2 < 0){
-		printf("\nN_pipe 2 could not be opened please tru again");
+		printf("\nN_pipe 2 could not be opened please try again");
 		exit(0);
 	}
-	while(1){		
+	while(1){
+		printf("\nWaiting for a button press....");		
 		if(read(N_pipe2, &(hittime), sizeof(hittime)) != sizeof(hittime)){
 			printf("\nError Reading in from N_pipe2 in thread0");
 			exit(-1);	
@@ -125,12 +127,13 @@ void *thread0(void *num){
 void *interpolate(void *num){
 
 	printArgs curr;		
-	uint64_t oldT, newT;
+	uint64_t oldT, newT, actT;
 	double slope, intercept;
-//	oldT = ( ((*((data *)num)->t).tv_sec * 1000000000)  + (*((data *)num)->t).tv_nsec);
-	oldT = (*((data *)num)->t).tv_nsec;
+	oldT = ( ((uint64_t)((*((data *)num)->t).tv_sec) * 1000000000)  + (uint64_t)(*((data *)num)->t).tv_nsec);
+	actT =  ( ((uint64_t)(((data *)num)->hit.tv_sec) * 1000000000)  + (uint64_t)((data *)num)->hit.tv_nsec);
+//	oldT = (*((data *)num)->t).tv_nsec;
 	curr.before = *(((data *)num)->gps);
-	
+
 
 
 
@@ -138,48 +141,52 @@ void *interpolate(void *num){
 		usleep(75000);
 	}
 
-//	newT = ( ((*((data *)num)->t).tv_sec * 1000000000)   +  (*((data *)num)->t).tv_nsec);
-	newT = (*((data *)num)->t).tv_nsec;
+	newT = ( ((uint64_t)((*((data *)num)->t).tv_sec) * 1000000000)   +  (uint64_t)(*((data *)num)->t).tv_nsec);
+	//newT = (*((data *)num)->t).tv_nsec;
 	curr.after = *(((data *)num)->gps);
 
 	//time for interpolation 
-	
 
-	slope = (double)(abs(((double)curr.after - (double)curr.before))/abs(newT - oldT));
-	intercept =(double)((double)(newT) - (slope*(double)curr.after));
-	curr.actual = (double)((slope*(((data *)num)->hit.tv_nsec)) + intercept);
-	printf("\nInterpolated data = %lf from %d and %d", curr.actual, curr.before, curr.after);
 
-	curr.bt.tv_nsec = oldT;
-	curr.at.tv_nsec = newT;
-	curr.pt.tv_nsec = (((data *)num)->hit.tv_nsec);
+	long timediff = (long)(newT - oldT);
+	double gpsdiff = (double)(curr.after - curr.before);
+	slope = (double)(gpsdiff) / (double)timediff;
+	intercept =(double)((double)(curr.after) - (slope*(double)newT));
+	curr.actual = (double)((slope*(double)(actT)) + intercept);
 
-//	write(((data *)num)->simple, &curr, sizeof(curr));
+	curr.bt = oldT;
+	curr.at = newT;
+	curr.pt = actT;
 
+//	if( (write(*(((data *)num)->simple), &curr, sizeof(curr))) < 0){
+//		printf("\nSimple pipe write unsucessfull");
+//	}
+//	else{
+//		printf("\nsucessfully wrote to the simple pipe");
+//	}
 
 	printf("\n----------------Button Pressed-------------------");
-        printf("\n\nBefore: %d at %ld", curr.before, oldT);
-        printf("\nCalculated: %d at %ld", curr.actual, ((data *)num)->hit.tv_nsec);
-        printf("\nAfter: %d at %ld\n\n", curr.after, newT);
-		
-	
+	printf("\n\nBefore: %d at %ld", curr.before, oldT);
+	printf("\nCalculated: %lf at %ld", curr.actual, actT);
+	printf("\nAfter: %d at %ld\n\n", curr.after, newT);
+
 
 	pthread_exit(0);
 }
 void *print(void *ptr){
 	printArgs x;	
-	
+
 	while(1){
 
-	if((read(*((int *)ptr), &x, sizeof(x))) != sizeof(x)){
-		printf("\nError Reading in from pipe in print thread...");
-		exit(0);
-	}
-	
-	printf("\n----------------Button Pressed-------------------");
-        printf("\n\nBefore: %d at %ld", x.before, x.bt.tv_nsec);
-        printf("\nCalculated: %d at %ld", x.actual, x.pt.tv_nsec);
-        printf("\nAfter: %d at %ld\n\n", x.after, x.at.tv_nsec);
+		if((read(*((int *)ptr), &x, sizeof(x))) != sizeof(x)){
+			printf("\nError Reading in from pipe in print thread...");
+			exit(0);
+		}
+
+		printf("\n----------------Button Pressed-------------------");
+		printf("\n\nBefore: %d at %ld", x.before, x.bt);
+		printf("\nCalculated: %lf at %ld", x.actual, x.pt);
+		printf("\nAfter: %d at %ld\n\n", x.after, x.at);
 
 
 	}

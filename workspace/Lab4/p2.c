@@ -31,7 +31,7 @@ int main(){
 
 	itval.it_value.tv_sec = 0;                                              //set the start time of the timer
 	itval.it_value.tv_nsec = 1000;
-	itval.it_interval.tv_nsec = 0;                                          //set the period of our timer
+	itval.it_interval.tv_sec = 0;                                          //set the period of our timer
 	itval.it_interval.tv_nsec = PERIOD;
 
 	struct sched_param param;                                               //set up scheduler
@@ -64,7 +64,7 @@ int main(){
 			clear_button();
 		}
 		  read(timer, &num_periods, sizeof(num_periods));
-//		usleep(75000);
+		usleep(75000);
 	}
 
 
