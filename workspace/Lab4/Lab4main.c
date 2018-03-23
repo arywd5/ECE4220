@@ -166,9 +166,9 @@ void *interpolate(void *num){
 //	}
 
 	printf("\n----------------Button Pressed-------------------");
-	printf("\n\nBefore: %d at %ld", curr.before, oldT);
-	printf("\nCalculated: %lf at %ld", curr.actual, actT);
-	printf("\nAfter: %d at %ld\n\n", curr.after, newT);
+	printf("\n\nBefore: %d at %lf", curr.before, oldT);
+	printf("\nCalculated: %lf at %lf", curr.actual, actT);
+	printf("\nAfter: %d at %lf\n\n", curr.after, newT);
 
 
 	pthread_exit(0);
