@@ -25,11 +25,13 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	int soc, port, var, master = 0, votes = 0;
+	int soc, port, var, master = 0, votes = 0, flags[3];
 	unsigned int length;
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
 	struct sockaddr_in server, from;
+	srand(time(0));
+
 	
 	//get IP of our network
 	if((getifaddrs(&ifaddr)) == -1){
@@ -65,29 +67,32 @@ int main(int argc, char *argv[]){
 	while(1){
 		
 		var = recvfrom(soc, message, MSG_SIZE, 0, (struct sockaddr *)&from, &length);
-		
+		if(var < 0){
+			printf("\nError Recieving Message..");
+			return -1;
+		}
 		//WHOIS recieved 
-		if(strcmp(message, "WHOIS") == 0){
+		else if(strcmp(message, "WHOIS") == 0){
 			if(master == 1){
 				sprintf(message, "Allie at %s if master", myIP);
 				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);			
 			}
-
 		}
 		//VOTE recieved
-		if(strcmp(message, "VOTE") == 0){
+		else if(strcmp(message, "VOTE") == 0){
 			votes = (rand()%10) + 1;		
-			sprintf(message, "%s %d", myIP, votes);
+			sprintf(message, "#%s %d", myIP, votes);
 			var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
-
+			flags[2] = 1;	
 		}
 		//IP # of votes recieved 
-		
-
-
-
-
-
+		else if(strncmp(message, "# 128.206.19", (size_t)(12*sizeof(char)))){
+//wont work because space after #	while(*(message + i) != ' '){
+//				i++
+//			}
+			
+				
+		}
 
 	}
 
