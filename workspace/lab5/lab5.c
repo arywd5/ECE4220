@@ -30,6 +30,7 @@ int main(int argc, char *argv[]){
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
 	struct sockaddr_in server, from;
+	char otherIP[2], otherVotes;
 	srand(time(0));
 
 	
@@ -67,6 +68,7 @@ int main(int argc, char *argv[]){
 	while(1){
 		
 		var = recvfrom(soc, message, MSG_SIZE, 0, (struct sockaddr *)&from, &length);
+		printf("\nMessage Recieved: %s", message);
 		if(var < 0){
 			printf("\nError Recieving Message..");
 			return -1;
@@ -87,13 +89,37 @@ int main(int argc, char *argv[]){
 		}
 		//IP # of votes recieved 
 		else if(strncmp(message, "# 128.206.19", (size_t)(12*sizeof(char)))){
-//wont work because space after #	while(*(message + i) != ' '){
-//				i++
-//			}
-			
-				
+			int getIP = 0, getVote = 0;
+			for(i = 12; message[i] != '\0'; i++){ //start parsing at position 12 because we know its the same up until then 
+				if(message[i] = '.'){
+					getIP = 1;	
+				}
+				else if(message[i] = ' '){
+					getIP = 0;
+					getVote = 1;
+				}
+				else if(getIP > 0){		//if the get IP flag is set that means we found a . and the IP should follow it 
+					otherIP[getIP - 1] = message[i];
+					getIP++;
+				}
+				else if(getVote = 1){		//if get vote flag is on save this to our number of votes
+					otherVotes = message[i];	
+				}
+			}
+			//now that we have parsed the message and got the IP number and vote number we can compare ours 
+			if(atoi(otherVotes) == myVotes){
+				//need to compare the IP's
+			}
+			else if(atoi(otherVotes) <= myVotes){
+				//you are the master so send the message 
+				master = 1;
+				sprintf(message, "Allie at %s is master", myIP);
+				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
+			}
+			else{ 	//you are not the master dont send any messages 
+				master = 0; 	
+			}
 		}
-
 	}
 
 	return 0;
