@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	int soc, port, var, master = 0, votes = 0, flags[3];
+	int i, bbroad = 1, soc, port, var, master = 0, votes = 0, flags[3];
 	unsigned int length;
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
@@ -62,7 +62,17 @@ int main(int argc, char *argv[]){
 	server.sin_family = AF_INET;
 	server.sin_port = htons(atoi(argv[1]));
 
-	
+	//broadcast and bind socket 
+	if(bind(soc, (const struct sockaddr *)&from, sizeof(from)) < 0){
+                printf("\nError binding socket..");
+                return -1;
+        }
+
+	var = setsockopt(soc, SOL_SOCKET, SO_BROADCAST, &bbroad, sizeof(bbroad));
+	if(var < 0){
+		printf("\nError in setsockopt()");
+		return -1;
+	}
 
 	//after socket is created enter an infinite loop to read in messages and send messages
 	while(1){
@@ -107,10 +117,11 @@ int main(int argc, char *argv[]){
 				}
 			}
 			//now that we have parsed the message and got the IP number and vote number we can compare ours 
-			if(atoi(otherVotes) == myVotes){
+			if(atoi(&otherVotes) == votes){
 				//need to compare the IP's
+				printf("\nComparing IPs...");
 			}
-			else if(atoi(otherVotes) <= myVotes){
+			else if(atoi(&otherVotes) <= votes){
 				//you are the master so send the message 
 				master = 1;
 				sprintf(message, "Allie at %s is master", myIP);
@@ -118,6 +129,7 @@ int main(int argc, char *argv[]){
 			}
 			else{ 	//you are not the master dont send any messages 
 				master = 0; 	
+				printf("\nYou are not the master..");
 			}
 		}
 	}
