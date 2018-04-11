@@ -84,14 +84,14 @@ int main(int argc, char *argv[]){
 			return -1;
 		}
 		//WHOIS recieved 
-		else if(strcmp(message, "WHOIS") == 0){
+		else if(strncmp(message, "WHOIS", 5) == 0){
 			if(master == 1){
 				sprintf(message, "Allie at %s if master", myIP);
 				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);			
 			}
 		}
 		//VOTE recieved
-		else if(strcmp(message, "VOTE") == 0){
+		else if(strncmp(message, "VOTE", 4) == 0){
 			votes = (rand()%10) + 1;		
 			sprintf(message, "#%s %d", myIP, votes);
 			var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
@@ -120,6 +120,7 @@ int main(int argc, char *argv[]){
 			if(atoi(&otherVotes) == votes){
 				//need to compare the IP's
 				printf("\nComparing IPs...");
+				
 			}
 			else if(atoi(&otherVotes) <= votes){
 				//you are the master so send the message 
