@@ -124,17 +124,17 @@ int main(int argc, char *argv[]){
 			if(atoi(otherVotes) == votes){
 				//need to compare the IP's
 				printf("\nComparing IPs...");
-				int theirs = atoi(otherIP), mine = atoi(WS);
-				if(theirs == 0){		
-					theirs = atoi(&(otherIP[0]));				
+				int theirs = atoi(otherIP), mine = atoi(WS);	//save both workstation numbers as integers 
+				if(theirs == 0){							//check that this conversion occured properly
+					theirs = atoi(&(otherIP[0]));			//if it didnt its probably a single digit workstation so only use first character in the array 
 				}	
-				if(theirs != 0){
+				if(theirs != 0){							//as long as thier workstation number is not zero we can compare them 
 					if(mine > theirs){
-						master = 1;
-						sprintf(message, "Allie at %s is master", myIP);
+						master = 1;							//set master flag if our IP is higher
+						sprintf(message, "Allie at %s is master", myIP);	//create and send string 
 						var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
 					}	
-					else{
+					else{									//if pur IP is not higher than we are not the master so set flag that way 
 						master = 0;
 					}
 				}
