@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 	}
 
 	int i, bbroad = 1, soc, port, var, master = 0, votes = 0, flags[3];
+	int voteFlag = 0, numVotes[10], *vPtr, count = 0;
 	unsigned int length;
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]){
 		printf("\nSocket error..");
 		return -1;
 	}
-	
+
 	//set up sockaddr structure to use for sending and recieving messages
 	from.sin_family = AF_INET;
 	from.sin_port = htons(atoi(argv[1]));
@@ -93,11 +94,21 @@ int main(int argc, char *argv[]){
 				sprintf(message, "Allie at %s is master", myIP);
 				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);			
 			}
+			votes = 0;
 		}
 		//VOTE recieved
 		else if(strncmp(message, "VOTE", 4) == 0){
+			master = 0;
+		//	memset(numVotes, 0, 10); 	
+			int k;
+			for(k = 0; k < 10; k++){
+				numVotes[k] = 0;	
+			}
+			//vPtr = &(numVotes[0]);
+			count = 0;
 			votes = (rand()%10) + 1;		//generate random vote number between 1-10	
 			sprintf(message, "# %s %d", myIP, votes);	//then send vote 
+			inet_aton("128.206.19.255", &from.sin_addr);
 			var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
 		}
 		//IP # of votes recieved 
@@ -121,18 +132,35 @@ int main(int argc, char *argv[]){
 				}
 			}
 			//now that we have parsed the message and got the IP number and vote number we can compare ours 
-			if(atoi(otherVotes) == votes){
+			numVotes[count++] = atoi(otherVotes);
+			if(atoi(otherIP) == atoi(WS)){
+				//ignore our own vote 
+			}	
+			else if(atoi(otherVotes) == votes){
 				//need to compare the IP's
 				printf("\nComparing IPs...");
-				int theirs = atoi(otherIP), mine = atoi(WS);	//save both workstation numbers as integers 
+				int theirs = atoi(otherVotes), mine = atoi(WS);	//save both workstation numbers as integers 		
+
 				if(theirs == 0){							//check that this conversion occured properly
 					theirs = atoi(&(otherIP[0]));			//if it didnt its probably a single digit workstation so only use first character in the array 
 				}	
 				if(theirs != 0){							//as long as thier workstation number is not zero we can compare them 
 					if(mine > theirs){
+						int j, check = 0;
+						for(j = 0; j < 10; j++){
+							printf("...%d vs %d ", votes, numVotes[j]);
+							if(votes < numVotes[j])
+								check = 1;
+						}
+						if(!check){
+							master = 1;
+						}
+						else
+							master = 0;
+
 						master = 1;							//set master flag if our IP is higher
-						sprintf(message, "Allie at %s is master", myIP);	//create and send string 
-						var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
+						//	sprintf(message, "Allie at %s is master", myIP);	//create and send string 
+						//	var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
 					}	
 					else{									//if pur IP is not higher than we are not the master so set flag that way 
 						master = 0;
@@ -142,9 +170,17 @@ int main(int argc, char *argv[]){
 			}
 			else if(atoi(otherVotes) < votes){
 				//you are the master so send the message 
-				master = 1;
-				sprintf(message, "Allie at %s is master", myIP);
-				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
+				int j, check = 0;
+				for(j = 0; j < 10; j++){
+					printf("...%d vs %d ", votes, numVotes[j]);
+					if(votes < numVotes[j])
+						check = 1;
+				}
+				if(!check){
+					master = 1;
+				}
+				else
+					master = 0;
 			}
 			else{ 	//you are not the master dont send any messages 
 				master = 0; 		
