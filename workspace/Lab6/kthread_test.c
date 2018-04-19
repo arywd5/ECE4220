@@ -27,8 +27,11 @@ static struct task_struct *kthread1;
 // Function to be associated with the kthread; what the kthread executes.
 int kthread_fn(void *ptr)
 {
-	unsigned long j0, j1;
+	unsigned long j0, j1, *ptr;
 	int count = 0;
+	
+	ptr = (unsigned long *)ioremap(0x3F200000, 4096);
+	*ptr = *ptr | 0x40000;
 
 	printk("In kthread1\n");
 	j0 = jiffies;		// number of clock ticks since system started;
@@ -42,8 +45,6 @@ int kthread_fn(void *ptr)
 	
 	printk("Before loop\n");
 	
-	// The ktrhead does not need to run forever. It can execute something
-	// and then leave.
 	while(1)
 	{
 		msleep(1000);	// good for > 10 ms
@@ -60,8 +61,6 @@ int kthread_fn(void *ptr)
 			do_exit(0);
 		}
 				
-		// comment out if your loop is going "fast". You don't want to
-		// printk too often. Sporadically or every second or so, it's okay.
 		printk("Count: %d\n", ++count);
 	}
 	

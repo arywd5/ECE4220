@@ -20,12 +20,22 @@ static struct task_struct *kthread1;
 
 int init_module(void){
 	
+	unsigned long *ptr;
+	ptr = (unsigned long *)ioremap(0xF200000, 4096);
+	
 
+	while(1){
 
+		if(kthread_should_stop()){
+			do_exit(0);
+		}
+		
+	}
 
-
-
+	
 }
+
+
 
 void cleanup_module(void){
 

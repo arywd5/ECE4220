@@ -139,20 +139,22 @@ int main(int argc, char *argv[]){
 			else if(atoi(otherVotes) == votes){
 				//need to compare the IP's
 				printf("\nComparing IPs...");
-				int theirs = atoi(otherVotes), mine = atoi(WS);	//save both workstation numbers as integers 		
+				int theirs = atoi(otherIP), mine = atoi(WS);	//save both workstation numbers as integers 		
 
 				if(theirs == 0){							//check that this conversion occured properly
 					theirs = atoi(&(otherIP[0]));			//if it didnt its probably a single digit workstation so only use first character in the array 
 				}	
 				if(theirs != 0){							//as long as thier workstation number is not zero we can compare them 
 					if(mine > theirs){
+						printf("%d > %d IPs", mine, theirs);
 						int j, check = 0;
 						for(j = 0; j < 10; j++){
-							printf("...%d vs %d ", votes, numVotes[j]);
-							if(votes < numVotes[j])
+							printf("\nis %d >  %d ", votes, numVotes[j]);
+							if(votes < numVotes[j]){
 								check = 1;
+							}
 						}
-						if(!check){
+						if(!check){	
 							master = 1;
 						}
 						else
