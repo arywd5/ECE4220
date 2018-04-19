@@ -60,6 +60,9 @@ static irqreturn_t button_isr(int irq, void *dev_id)
 	// DO STUFF (whatever you need to do, based on the button that was pushed)
 
 	// IMPORTANT: Clear the Event Detect status register before leaving.	
+
+	//determine whihc button has been pressed and update frequency 
+
 	
 	printk("Interrupt handled\n");	
 	enable_irq(79);		// re-enable interrupt
@@ -71,6 +74,17 @@ int init_module()
 {
 	int dummy = 0;
 
+	//memory map to first register GPSEL0 configure ports as inputs 
+		//gpud 
+		//UDELAY 150 us 
+		//set clock 
+		//udelay 150 clock cycles again
+		//take both off 
+		//set to zero 
+		//this enables and configures pull downs 
+		
+		//inrement to the specific register 
+		//bitmask to trigger 
 	// Map GPIO registers
 	// Remember to map the base address (beginning of a memory page)
 	// Then you can offset to the addresses of the other registers

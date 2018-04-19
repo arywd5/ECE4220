@@ -42,7 +42,7 @@ enum hrtimer_restart timer_callback(struct hrtimer *timer_for_restart)
 		printk("Count: %d, overruns: %ld\n", ++count, overruns);
 	}
 	dummy = (dummy + 1)%1000;
-	
+	//add in square wave 	
 	
 	return HRTIMER_RESTART;	// Return this value to restart the timer.
 							// If you don't want/need a recurring timer, return
@@ -51,6 +51,8 @@ enum hrtimer_restart timer_callback(struct hrtimer *timer_for_restart)
 
 int timer_init(void)
 {
+	//memory map!!!
+
 	// Configure and initialize timer
 	ktime_t ktime = ktime_set(0, timer_interval_ns); // (long sec, long nano_sec)
 	

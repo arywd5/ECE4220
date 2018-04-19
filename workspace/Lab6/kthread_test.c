@@ -18,31 +18,19 @@
 #include <linux/time.h>		// for using jiffies 
 #include <linux/timer.h>
 #include <linux/delay.h>
+#include <asm/io.h>
 
 MODULE_LICENSE("GPL");
 
 // structure for the kthread.
 static struct task_struct *kthread1;
+unsigned long *ptr;
 
 // Function to be associated with the kthread; what the kthread executes.
-int kthread_fn(void *ptr)
+int kthread_fn(void *p)
 {
-	unsigned long j0, j1, *ptr;
 	int count = 0;
-	
-	ptr = (unsigned long *)ioremap(0x3F200000, 4096);
-	*ptr = *ptr | 0x40000;
-
-	printk("In kthread1\n");
-	j0 = jiffies;		// number of clock ticks since system started;
-						// current "time" in jiffies
-	j1 = j0 + 10*HZ;	// HZ is the number of ticks per second, that is
-						// 1 HZ is 1 second in jiffies
-	
-	while(time_before(jiffies, j1))	// true when current "time" is less than j1
-        schedule();		// voluntarily tell the scheduler that it can schedule
-						// some other process
-	
+		
 	printk("Before loop\n");
 	
 	while(1)
@@ -52,6 +40,10 @@ int kthread_fn(void *ptr)
 		//udelay(unsigned long usecs);	// good for a few us (micro s)
 		//usleep_range(unsigned long min, unsigned long max); // good for 10us - 20 ms
 		
+		//here turn speaker high sleep again and turn speaker low here		
+		*ptr = *(ptr + 7) | 0x1c0000;	//turn speaker high 
+		msleep(1000);
+		*ptr = *(ptr + 10) | 0x1c0000; //turn speaker low
 		
 		// In an infinite loop, you should check if the kthread_stop
 		// function has been called (e.g. in clean up module). If so,
@@ -59,9 +51,7 @@ int kthread_fn(void *ptr)
 		// will persist even after removing the module.
 		if(kthread_should_stop()) {
 			do_exit(0);
-		}
-				
-		printk("Count: %d\n", ++count);
+		}			
 	}
 	
 	return 0;
@@ -69,6 +59,10 @@ int kthread_fn(void *ptr)
 
 int thread_init(void)
 {
+	ptr = (unsigned long *)ioremap(0x3F200000, 4096);
+	*ptr = *ptr | 0x40000;					//set speaker as an output 
+
+	
 	char kthread_name[11]="my_kthread";	// try running  ps -ef | grep my_kthread
 										// when the thread is active.
 	printk("In init module\n");
