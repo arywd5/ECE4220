@@ -18,6 +18,7 @@ static const struct modversion_info ____versions[]
 __used
 __attribute__((section("__versions"))) = {
 	{ 0x1fd34168, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0xfe990052, __VMLINUX_SYMBOL_STR(gpio_free) },
 	{ 0x41e667b1, __VMLINUX_SYMBOL_STR(kthread_stop) },
 	{ 0xe4b112d9, __VMLINUX_SYMBOL_STR(wake_up_process) },
 	{ 0x251dd649, __VMLINUX_SYMBOL_STR(kthread_create_on_node) },
@@ -25,7 +26,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x2e5810c6, __VMLINUX_SYMBOL_STR(__aeabi_unwind_cpp_pr1) },
 	{ 0x952664c5, __VMLINUX_SYMBOL_STR(do_exit) },
 	{ 0xb3f7646e, __VMLINUX_SYMBOL_STR(kthread_should_stop) },
-	{ 0xf9a482f9, __VMLINUX_SYMBOL_STR(msleep) },
+	{ 0x8e865d3c, __VMLINUX_SYMBOL_STR(arm_delay_ops) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0xb1ad28e0, __VMLINUX_SYMBOL_STR(__gnu_mcount_nc) },
 };
@@ -36,4 +37,4 @@ __attribute__((section(".modinfo"))) =
 "depends=";
 
 
-MODULE_INFO(srcversion, "3FC4D960A0B3955946662C5");
+MODULE_INFO(srcversion, "F9F8FBB228538392B400970");

@@ -1,9 +1,6 @@
 //Allison Yaeger 	
 //14244528
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <wiringPi.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -21,47 +18,25 @@
 #include <linux/delay.h>
 #include <linux/hrtimer.h>
 #include <linux/ktime.h>
+#include <linux/gpio.h>
 
+MODULE_LICENSE("GPL");
 
+unsigned long *ptr;
 
-//function prototypes 
-void *thread1(void *data); //thread function to create sound on the auxillary board 
-
-
-int main(int argc, char *argv[]){
+int init_module(void){
+	ptr = (unsigned long *)ioremap(0x3f200000, 4096);
 	
-	if(argc != 2){
-		printf("\nImproper Usage, example:\n./a.out <run type>");
-		printf("Run Types:\n	1 -- Kthread\n	2 -- hrtimer");
-		return -1;
-	}	
+	//set buttons as inputs and speaker as an output
 	
-	if(atoi(argv[1]) == 1){
-		
-
-	}
-
-	else if(atoi(argv[1]) == 2){
 
 
-	}
-
-	else{
-		printf("\nImproper run type, please try again");
-		return -1;
-	}
-
-
-	return 0;
-}
-void *thread1(void *data){
-	int freq = *((int *)data);	
-	
-	while(1){
-		
-
-	}
 
 }
 
+void cleanup_module(void){
 
+
+
+
+} 

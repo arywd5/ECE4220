@@ -18,6 +18,7 @@
 #include <linux/time.h>		// for using jiffies 
 #include <linux/timer.h>
 #include <linux/delay.h>
+#include <linux/gpio.h>
 #include <asm/io.h>
 
 MODULE_LICENSE("GPL");
@@ -28,27 +29,19 @@ unsigned long *ptr;
 
 // Function to be associated with the kthread; what the kthread executes.
 int kthread_fn(void *p)
-{
-	int count = 0;
-		
+{		
 	printk("Before loop\n");
 	
 	while(1)
 	{
-		msleep(1000);	// good for > 10 ms
-		//msleep_interruptible(1000); // good for > 10 ms
-		//udelay(unsigned long usecs);	// good for a few us (micro s)
-		//usleep_range(unsigned long min, unsigned long max); // good for 10us - 20 ms
+
+		iowrite32( (*(ptr + 7) | 0x00000044 ), (ptr + 7));      //turn speaker high
+		udelay(800);	// good for a few us (micro s) 		//delay for 800 microseconds 
+		iowrite32( (*(ptr + 10) | 0x00000044 ), (ptr +10));	//turn speaker low 
+		udelay(800);						//sleep for 800 microseconds 
+	//	*ptr = *(ptr + 10) | 0x00000044; //turn speaker low
 		
-		//here turn speaker high sleep again and turn speaker low here		
-		*ptr = *(ptr + 7) | 0x1c0000;	//turn speaker high 
-		msleep(1000);
-		*ptr = *(ptr + 10) | 0x1c0000; //turn speaker low
-		
-		// In an infinite loop, you should check if the kthread_stop
-		// function has been called (e.g. in clean up module). If so,
-		// the kthread should exit. If this is not done, the thread
-		// will persist even after removing the module.
+		//check is we should exit the thread 
 		if(kthread_should_stop()) {
 			do_exit(0);
 		}			
@@ -59,13 +52,16 @@ int kthread_fn(void *p)
 
 int thread_init(void)
 {
-	ptr = (unsigned long *)ioremap(0x3F200000, 4096);
-	*ptr = *ptr | 0x40000;					//set speaker as an output 
+	ptr = (unsigned long *)ioremap(0x3f200000, 4096);
+//	*ptr = *ptr | 0x40040;				//set speaker as an output 
+	iowrite32( (*ptr | 0x00040040), ptr);	
+	iowrite32( (*ptr | 0x00000044), ptr);
+	printk("\n*Ptr == %lx", *ptr);
 
-	
+
 	char kthread_name[11]="my_kthread";	// try running  ps -ef | grep my_kthread
 										// when the thread is active.
-	printk("In init module\n");
+	printk("\nIn init module\n");
     	    
     kthread1 = kthread_create(kthread_fn, NULL, kthread_name);
 	
@@ -85,7 +81,9 @@ void thread_cleanup(void) {
 	// the thread should stop itself (with do_exit above).
 	// kthread should not be called if the thread has already stopped.
 	ret = kthread_stop(kthread1);
-								
+	
+	gpio_free(16);
+							
 	if(!ret)
 		printk("Kthread stopped\n");
 }
