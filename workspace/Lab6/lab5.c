@@ -31,7 +31,7 @@ int main(int argc, char *argv[]){
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
 	struct sockaddr_in server, from;
-	char otherIP[2], *otherVotes, WS[2];
+	char otherIP[2], *otherVotes, WS[2], note;
 	otherVotes = (char *)malloc(sizeof(char));
 	srand(time(0));
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 		//VOTE recieved
 		else if(strncmp(message, "VOTE", 4) == 0){
 			master = 0;
-		//	memset(numVotes, 0, 10); 	
+			//	memset(numVotes, 0, 10); 	
 			int k;
 			for(k = 0; k < 10; k++){
 				numVotes[k] = 0;	
@@ -187,14 +187,40 @@ int main(int argc, char *argv[]){
 			else{ 	//you are not the master dont send any messages 
 				master = 0; 		
 			}
-		//if @ note is recieved 
+			//if @ note is recieved 
 		}
 		else if(strncmp(message, "@", (size_t)sizeof(char)) == 0){
-			
+			if(master == 1){
+				//need to broadcast the message because we are the master 
+				if(note != message[1]){			//check that the note is not already playing 
+					inet_aton("128.206.19.255", &from.sin_addr);			//broadcast to all other users to they change their noite 
+	            	var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
+					note = message[1];
+					//send message to the kernel to change note 
+		
+				}
+				//otherwise ignore because we are already playing that note 
+			}
+
+			else{
+				if(message[1] == 'A'){
 
 
+				}		
+				else if(message[1] == 'B'){
 
-			
+				}
+				else if(message[1] == 'C'){
+
+				}
+				else if(message[1] == 'D'){
+
+
+				}
+				else if(message[1] == 'E'){
+
+				}
+			}
 		}		
 	}
 
