@@ -19,24 +19,47 @@
 #include <linux/hrtimer.h>
 #include <linux/ktime.h>
 #include <linux/gpio.h>
+#include <asm/io.h>
+#include <linux/init.h>
+#include <linux/types.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
 
 MODULE_LICENSE("GPL");
+int mydev_id;			//handler indentfier
+unsigned long *ptr;		//pointer to memory map
 
-unsigned long *ptr;
+static irqreturn_t button_isr(int irq, void *dev_id){
+
+	disable_irq_nosync(79);
+
+
+
+
+	
+	printk("\nInterrupt handled");
+	enable_irq(79);	
+
+	return IRQ_HANDLED;
+}
 
 int init_module(void){
+	int dummy = 0;
 	ptr = (unsigned long *)ioremap(0x3f200000, 4096);
-	
+		
 	//set buttons as inputs and speaker as an output
-	
+		
 
 
+	dummy = request_irq(79, button_isr, IRQF_SHARED, "Button_handler", &mydev_id);
+
+	return 0;
 
 }
 
 void cleanup_module(void){
 
+	free_irq(79, &mydev_id);
 
-
-
+	printk("\nButton DEtection disabled.");
 } 

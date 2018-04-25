@@ -187,7 +187,15 @@ int main(int argc, char *argv[]){
 			else{ 	//you are not the master dont send any messages 
 				master = 0; 		
 			}
+		//if @ note is recieved 
 		}
+		else if(strncmp(message, "@", (size_t)sizeof(char)) == 0){
+			
+
+
+
+			
+		}		
 	}
 
 	free(otherVotes);
