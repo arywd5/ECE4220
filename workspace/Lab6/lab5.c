@@ -26,12 +26,12 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	int i, bbroad = 1, soc, port, var, master = 0, votes = 0, flags[3], cdev_id, dummy;
-	int voteFlag = 0, numVotes[10], *vPtr, count = 0;
-	unsigned int length;
+	int i, bbroad = 1, soc, var, master = 0, votes = 0, cdev_id, dummy;
+	int numVotes[10], count = 0;
+	socklen_t length;
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
-	struct sockaddr_in server, from;
+	struct sockaddr_in server, me, x;
 	char otherIP[2], *otherVotes, WS[2], note, buffer[MSG_SIZE];
 	otherVotes = (char *)malloc(sizeof(char));
 	srand(time(0));
@@ -65,16 +65,18 @@ int main(int argc, char *argv[]){
 	}
 
 	//set up sockaddr structure to use for sending and recieving messages
-	from.sin_family = AF_INET;
-	from.sin_port = htons(atoi(argv[1]));
-	inet_aton("128.206.19.255", &from.sin_addr);
-	length  = sizeof(struct sockaddr_in);
+//	me.sin_family = AF_INET;
+//	me.sin_port = htons(atoi(argv[1]));
+//	inet_aton("128.206.19.255", &me.sin_addr);
+//	length  = sizeof(struct sockaddr_in);
 
+	bzero(&server, sizeof(server));
 	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = INADDR_ANY;
 	server.sin_port = htons(atoi(argv[1]));
 
 	//broadcast and bind socket 
-	if(bind(soc, (const struct sockaddr *)&from, sizeof(from)) < 0){
+	if(bind(soc, (const struct sockaddr *)&server, sizeof(server)) < 0){
 		printf("\nError binding socket..");
 		return -1;
 	}
@@ -84,11 +86,11 @@ int main(int argc, char *argv[]){
 		printf("\nError in setsockopt()");
 		return -1;
 	}
-
+	length = sizeof(struct sockaddr_in);
 	//after socket is created enter an infinite loop to read in messages and send messages
 	while(1){
 		memset(message,'\0', 40);			//clear message so we dont have any leftover numbers in it 
-		var = recvfrom(soc, message, MSG_SIZE, 0, (struct sockaddr *)&from, &length);
+		var = recvfrom(soc, message, MSG_SIZE, 0, (struct sockaddr *)&me, &length);
 		printf("\nMessage Recieved: %s", message);	//print recieved messafge to the screen 
 		if(var < 0){					//check that message was recieved properly 
 			printf("\nError Recieving Message..");
@@ -98,7 +100,7 @@ int main(int argc, char *argv[]){
 		else if(strncmp(message, "WHOIS", 5) == 0){
 			if(master == 1){			//check if the master flag is set and if so send message 
 				sprintf(message, "Allie at %s is master", myIP);
-				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);			
+				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&me, length);			
 			}
 			votes = 0;
 		}
@@ -114,8 +116,8 @@ int main(int argc, char *argv[]){
 			count = 0;
 			votes = (rand()%10) + 1;		//generate random vote number between 1-10	
 			sprintf(message, "# %s %d", myIP, votes);	//then send vote 
-			inet_aton("128.206.19.255", &from.sin_addr);
-			var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
+			inet_aton("128.206.19.255", &me.sin_addr);
+			var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&me, length);
 		}
 		//IP # of votes recieved 
 		else if(strncmp(message, "# 128.206.19", (size_t)(12*sizeof(char))) == 0){
@@ -132,7 +134,7 @@ int main(int argc, char *argv[]){
 					otherIP[getIP - 1] = message[i];	//store next value in our otherIP variable 
 					getIP++;
 				}
-				else if(getVote = 1){		//if get vote flag is on save this to our number of votes
+				else if(getVote == 1){		//if get vote flag is on save this to our number of votes
 					*otherVotes = message[i];	//if vote flag is set get number of votes 
 					getVote = 0;
 				}
@@ -199,8 +201,8 @@ int main(int argc, char *argv[]){
 			if(master == 1){
 				//need to broadcast the message because we are the master 
 				if(note != message[1]){			//check that the note is not already playing 
-					inet_aton("128.206.19.255", &from.sin_addr);			//broadcast to all other users to they change their noite 
-	            	var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
+					inet_aton("128.206.19.255", &me.sin_addr);			//broadcast to all other users to they change their noite 
+	            	var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&me, length);
 					note = message[1];
 					//send message to the kernel to change note 
 					buffer[0] = message[1];
