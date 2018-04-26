@@ -36,9 +36,9 @@ int kthread_fn(void *p)
 	{
 
 		*(ptr + 7) = (*(ptr + 7)) | 0x00000044;			//turn speaker high 
-		udelay(800);	// good for a few us (micro s) 		//delay for 800 microseconds 
+		udelay(200);	// good for a few us (micro s) 		//delay for 800 microseconds 
 		*(ptr + 10) = (*(ptr + 10)) | 0x00000044;		//turn speaker low 
-		udelay(800);						//sleep for 800 microseconds 
+		udelay(200);						//sleep for 800 microseconds 
 		
 		//check is we should exit the thread 
 		if(kthread_should_stop()) {
@@ -52,9 +52,7 @@ int kthread_fn(void *p)
 int thread_init(void)
 {
 	ptr = (unsigned long *)ioremap(0x3f200000, 4096); 
-	iowrite32( (*ptr | 0x00040040), ptr);			//set speaker as outputs after memory map is created 
-	iowrite32( (*ptr | 0x00000044), ptr);
-
+	*ptr = *ptr | 0x00040044;		//set speaker output 
 
 	char kthread_name[11]="my_kthread";	// try running  ps -ef | grep my_kthread
 										// when the thread is active.

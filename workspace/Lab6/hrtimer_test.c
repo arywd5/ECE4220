@@ -48,10 +48,10 @@ enum hrtimer_restart timer_callback(struct hrtimer *timer_for_restart)
 	}
 	dummy = (dummy + 1)%1000;
 	if( (count++ % 2) == 0){
-		iowrite32( (*(ptr + 7) | 0x00000044), (ptr + 7));
+		*(ptr + 7) = (*(ptr + 7) | 0x00000044);
 	}	
 	else{
-		iowrite32( (*(ptr + 10) | 0x000000044), (ptr + 10));	
+		*(ptr + 10) = (*(ptr + 10) | 0x000000044);	
 	}
 
 
@@ -64,8 +64,8 @@ int timer_init(void)
 {
 	ptr = (unsigned long *)ioremap(0x3f200000, 4096);
 
-	iowrite32(( *ptr | 0x00040040), ptr);
-	iowrite32(( *ptr | 0x00000044), ptr);
+	*ptr = *ptr | (0x00040040);
+	
 
 	// Configure and initialize timer
 	ktime_t ktime = ktime_set(0, timer_interval_ns); // (long sec, long nano_sec)
