@@ -12,11 +12,12 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
+#include <fcntl.h>
 
 //IP 128.206.19.255
 
 #define MSG_SIZE 40
-
+#define CHAR_DEV "/dev/Lab6"
 
 int main(int argc, char *argv[]){
 
@@ -25,17 +26,22 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 
-	int i, bbroad = 1, soc, port, var, master = 0, votes = 0, flags[3];
+	int i, bbroad = 1, soc, port, var, master = 0, votes = 0, flags[3], cdev_id, dummy;
 	int voteFlag = 0, numVotes[10], *vPtr, count = 0;
 	unsigned int length;
 	char message[MSG_SIZE], myIP[NI_MAXHOST];
 	struct ifaddrs *ifaddr, *ifa;	
 	struct sockaddr_in server, from;
-	char otherIP[2], *otherVotes, WS[2], note;
+	char otherIP[2], *otherVotes, WS[2], note, buffer[MSG_SIZE];
 	otherVotes = (char *)malloc(sizeof(char));
 	srand(time(0));
 
-
+	//open character device
+	if((cdev_id = open(CHAR_DEV, O_RDWR)) == -1){
+		printf("\nCannot open device %s", CHAR_DEV);
+		exit(1);
+	}
+	
 	//get IP of our network
 	if((getifaddrs(&ifaddr)) == -1){
 		printf("\nError in getifaddrs");
@@ -197,33 +203,28 @@ int main(int argc, char *argv[]){
 	            	var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
 					note = message[1];
 					//send message to the kernel to change note 
-		
+					buffer[0] = message[1];
+					dummy = write(cdev_id, buffer, sizeof(buffer));
+					if(dummy != sizeof(buffer)){
+						printf("\nWrite Failed, leaving...");
+						break;
+					}
 				}
 				//otherwise ignore because we are already playing that note 
 			}
 
-			else{
-				if(message[1] == 'A'){
-
-
-				}		
-				else if(message[1] == 'B'){
-
-				}
-				else if(message[1] == 'C'){
-
-				}
-				else if(message[1] == 'D'){
-
-
-				}
-				else if(message[1] == 'E'){
-
+			else{	//if we are not the master just send message to the kernel space 
+				buffer[0] = message[1];
+				dummy = write(cdev_id, buffer, sizeof(buffer));
+				if(dummy != sizeof(buffer)){
+					printf("\nWrite Failed, leaving..");
+					break;
 				}
 			}
 		}		
 	}
 
+	close(cdev_id);		//close the character device
 	free(otherVotes);
 	return 0;
 }

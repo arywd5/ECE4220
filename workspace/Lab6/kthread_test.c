@@ -35,9 +35,9 @@ int kthread_fn(void *p)
 	while(1)
 	{
 
-		*(ptr + 7) = (*(ptr + 7)) | 0x00000044;			//turn speaker high 
+		*(ptr + 7) = (*(ptr + 7)) | 0x00000040;			//turn speaker high 
 		udelay(200);	// good for a few us (micro s) 		//delay for 800 microseconds 
-		*(ptr + 10) = (*(ptr + 10)) | 0x00000044;		//turn speaker low 
+		*(ptr + 10) = (*(ptr + 10)) | 0x00000040;		//turn speaker low 
 		udelay(200);						//sleep for 800 microseconds 
 		
 		//check is we should exit the thread 

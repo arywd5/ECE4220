@@ -48,10 +48,10 @@ enum hrtimer_restart timer_callback(struct hrtimer *timer_for_restart)
 	}
 	dummy = (dummy + 1)%1000;
 	if( (count++ % 2) == 0){
-		*(ptr + 7) = (*(ptr + 7) | 0x00000044);
+		*(ptr + 7) = (*(ptr + 7) | 0x0040);
 	}	
 	else{
-		*(ptr + 10) = (*(ptr + 10) | 0x000000044);	
+		*(ptr + 10) = (*(ptr + 10) | 0x0040);	
 	}
 
 
