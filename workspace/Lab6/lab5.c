@@ -102,7 +102,6 @@ int main(int argc, char *argv[]){
 				sprintf(message, "Allie at %s is master", myIP);
 				var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&me, length);			
 			}
-			votes = 0;
 		}
 		//VOTE recieved
 		else if(strncmp(message, "VOTE", 4) == 0){
@@ -168,7 +167,7 @@ int main(int argc, char *argv[]){
 						else
 							master = 0;
 
-						master = 1;							//set master flag if our IP is higher
+												//set master flag if our IP is higher
 						//	sprintf(message, "Allie at %s is master", myIP);	//create and send string 
 						//	var = sendto(soc, message, strlen(message), 0, (struct sockaddr *)&from, length);
 					}	
@@ -179,10 +178,10 @@ int main(int argc, char *argv[]){
 
 			}
 			else if(atoi(otherVotes) < votes){
-				//you are the master so send the message 
+				//parse vote array before declaring that were the master  
 				int j, check = 0;
 				for(j = 0; j < 10; j++){
-					printf("...%d vs %d ", votes, numVotes[j]);
+					printf("...\n%d vs %d ", votes, numVotes[j]);
 					if(votes < numVotes[j])
 						check = 1;
 				}
@@ -194,9 +193,9 @@ int main(int argc, char *argv[]){
 			}
 			else{ 	//you are not the master dont send any messages 
 				master = 0; 		
-			}
-			//if @ note is recieved 
+			} 
 		}
+		//@ note message recieved 
 		else if(strncmp(message, "@", (size_t)sizeof(char)) == 0){
 			if(master == 1){
 				//need to broadcast the message because we are the master 
